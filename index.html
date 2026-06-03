@@ -91,6 +91,24 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .project-card-clickable{cursor:pointer;transition:background 0.12s;border-radius:4px;padding:4px;margin:-4px;}
 .project-card-clickable:hover{background:rgba(201,169,110,0.07);}
 
+/* ── H2H projects ── */
+.h2h-project-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.h2h-project-row:last-child{border-bottom:none;}
+.status-badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:8px;text-transform:uppercase;letter-spacing:0.4px;}
+.status-active   {background:#e8f5e9;color:#2e7d32;}
+.status-completed{background:#e8eaf6;color:#303f9f;}
+.status-abandoned{background:#fce4ec;color:#880e4f;}
+
+/* ── Session edit modal ── */
+.session-edit-overlay{position:fixed;inset:0;background:rgba(26,19,16,0.7);display:flex;align-items:center;justify-content:center;z-index:220;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.session-edit-overlay.show{opacity:1;pointer-events:all;}
+.session-edit-box{background:var(--parchment);border:1.5px solid var(--border);border-radius:6px;padding:22px 26px;max-width:360px;width:92%;}
+.se-label{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:4px;margin-top:10px;display:block;}
+.se-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;background:white;color:var(--ink);}
+.se-input:focus{outline:2px solid var(--sepia);}
+.edit-icon-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 5px;color:var(--muted);opacity:0.6;transition:opacity 0.15s;line-height:1;}
+.edit-icon-btn:hover{opacity:1;}
+
 /* ── Pacing panel ── */
 .pacing-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;}
 .pacing-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
@@ -506,6 +524,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
   <div class="page" id="page-league">
     <div id="league-main">
       <div class="section-title">Leaderboard</div>
+      <div class="metric-pills" id="time-filter-pills" style="margin-bottom:6px"></div>
       <div class="metric-pills" id="metric-pills"></div>
       <div id="lb-table"></div>
       <div class="lb-hint">Click a writer to see head-to-head stats</div>
@@ -515,8 +534,16 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
       <div class="section-title">Head to head — <span id="h2h-period">this year</span></div>
       <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:20px" id="h2h-compare"></div>
       <div class="two-col">
-        <div class="panel"><div class="section-title" id="h2h-map1-title">Heatmap</div><div class="heatmap-grid" id="heatmap-h2h-me"></div><div class="month-labels"><span>Jan</span><span>Jun</span><span>Dec</span></div></div>
-        <div class="panel"><div class="section-title" id="h2h-map2-title">Heatmap</div><div class="heatmap-grid" id="heatmap-h2h-them"></div><div class="month-labels"><span>Jan</span><span>Jun</span><span>Dec</span></div></div>
+        <div class="panel"><div class="section-title" id="h2h-map1-title">Heatmap</div><div class="heatmap-grid" id="heatmap-h2h-me"></div><div class="month-labels"></div></div>
+        <div class="panel"><div class="section-title" id="h2h-map2-title">Heatmap</div><div class="heatmap-grid" id="heatmap-h2h-them"></div><div class="month-labels"></div></div>
+      </div>
+      <div style="margin-top:16px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)">
+          <div class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">Projects</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap" id="h2h-filter-row"></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="h2h-sort-row"></div>
+        <div class="two-col" id="h2h-projects-cols"></div>
       </div>
     </div>
   </div>
@@ -594,7 +621,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 <!-- Journal new entry modal -->
 <div class="journal-modal-overlay" id="journal-modal-overlay">
   <div class="journal-modal-box">
-    <div class="journal-modal-title">New Journal Entry</div>
+    <div class="journal-modal-title" id="journal-modal-title">New Journal Entry</div>
     <span class="jm-label">Title <span style="color:var(--border)">(optional)</span></span>
     <input class="jm-input" id="jm-title" type="text" placeholder="e.g. A breakthrough on Chapter 7">
     <span class="jm-label">Entry</span>
@@ -606,6 +633,37 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
     <div class="jm-actions">
       <button class="jm-save" onclick="saveJournalEntry()">Save entry</button>
       <button class="jm-cancel" onclick="closeJournalModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Session edit modal -->
+<div class="session-edit-overlay" id="session-edit-overlay">
+  <div class="session-edit-box">
+    <div style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">Edit session</div>
+    <span class="se-label">Stage</span>
+    <select class="se-input" id="se-stage">
+      <option value="plan">📋 Plan</option>
+      <option value="flow">✍️ Flow write</option>
+      <option value="edit">✂️ Edit</option>
+    </select>
+    <span class="se-label">Word count</span>
+    <input class="se-input" id="se-words" type="number">
+    <span class="se-label">Project</span>
+    <select class="se-input" id="se-project"></select>
+    <span class="se-label">Note</span>
+    <textarea class="se-input" id="se-note" style="height:56px;resize:none;line-height:1.5"></textarea>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center">
+      <button class="confirm-yes" onclick="saveSessionEdit()">Save</button>
+      <button class="confirm-no" onclick="closeSessionEdit()">Cancel</button>
+      <button style="margin-left:auto;padding:7px 12px;background:none;border:1px solid var(--accent);color:var(--accent);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase" onclick="confirmDeleteSession()">Delete</button>
+    </div>
+    <div id="se-delete-confirm" style="display:none;margin-top:10px;padding:10px 12px;background:#fce4ec;border-radius:4px;border:1px solid #f8bbd0">
+      <div style="font-size:11px;color:#b71c1c;margin-bottom:8px">Permanently delete this session?</div>
+      <div style="display:flex;gap:8px">
+        <button style="padding:6px 14px;background:var(--accent);color:white;border:none;border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase" onclick="executeDeleteSession()">Yes, delete</button>
+        <button style="padding:6px 14px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase" onclick="document.getElementById('se-delete-confirm').style.display='none'">No</button>
+      </div>
     </div>
   </div>
 </div>
@@ -628,6 +686,17 @@ let currentStage = 'plan', inputMode = 'paste', sessionWordCount = 0;
 let currentMetric = 'flow_words', pendingTimerData = null;
 let selectedProjectColor = '#8b6914';
 let timerState = 'idle', timerRun = 0, timerPaused = 0, timerPhaseStart = 0, timerTick_ = null;
+// Batch 4 state
+let currentTimeFilter = 'year', filteredStats = [], filterCache = {};
+let editingJournalEntryId = null, editingSessionId = null;
+let h2hOtherProjects = [], h2hOtherSessions = [], h2hCurrentOther = null;
+let h2hSortBy = 'words', h2hSortDir = 'desc', h2hStatusFilter = 'all';
+
+const TIME_FILTERS = [
+  {key:'today', label:'Today'}, {key:'week', label:'This week'},
+  {key:'month', label:'This month'}, {key:'year', label:'This year'},
+  {key:'alltime', label:'All time'},
+];
 
 const PROJECT_COLORS = ['#8b6914','#c0392b','#2980b9','#27ae60','#8e44ad','#e67e22','#16a085','#2c3e50'];
 
@@ -1181,6 +1250,7 @@ function renderProjectDetail(project) {
                 ${s.note ? `<div class="entry-note">"${s.note}"</div>` : ''}
               </div>
               <div class="entry-time">${date} ${time}</div>
+              <button class="edit-icon-btn" onclick="openSessionEdit('${s.id}')" title="Edit session">✏️</button>
             </div>`;
           }).join('')}
       ${projectSessions.length > 30 ? `<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px">Showing 30 of ${projectSessions.length} sessions</div>` : ''}
@@ -1228,12 +1298,55 @@ function renderTodaySessions() {
     const proj = myProjects.find(p => p.id === s.project_id);
     const wStr = s.stage === 'edit' ? (s.word_count >= 0 ? '+' : '') + s.word_count.toLocaleString() : s.word_count.toLocaleString();
     const time = new Date(s.logged_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    return `<div class="log-entry"><div class="entry-dot ${dc[s.stage]}"></div><div class="entry-words">${wStr}</div><div style="flex:1"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:${sc[s.stage]}">${sn[s.stage]}</div>${proj?`<div style="font-size:10px;color:var(--muted)">${proj.name}</div>`:''} ${s.note?`<div class="entry-note">"${s.note}"</div>`:''}</div><div class="entry-time">${time}</div></div>`;
+    return `<div class="log-entry"><div class="entry-dot ${dc[s.stage]}"></div><div class="entry-words">${wStr}</div><div style="flex:1"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:${sc[s.stage]}">${sn[s.stage]}</div>${proj?`<div style="font-size:10px;color:var(--muted)">${proj.name}</div>`:''} ${s.note?`<div class="entry-note">"${s.note}"</div>`:''}</div><div class="entry-time">${time}</div><button class="edit-icon-btn" onclick="openSessionEdit('${s.id}')" title="Edit session">✏️</button></div>`;
   }).join('');
 }
 
 // ── League ─────────────────────────────────────────────────────────────────
-function renderLeague() { renderMetricPills(); renderLeaderboard(); }
+function renderLeague() { renderTimeFilterPills(); renderMetricPills(); renderLeaderboard(); }
+
+function renderTimeFilterPills() {
+  document.getElementById('time-filter-pills').innerHTML = TIME_FILTERS.map(f =>
+    `<div class="metric-pill${f.key===currentTimeFilter?' active':''}" onclick="setTimeFilter('${f.key}')">${f.label}</div>`).join('');
+}
+
+async function setTimeFilter(key) {
+  currentTimeFilter = key;
+  renderTimeFilterPills();
+  if (key === 'year') { filteredStats = []; renderLeaderboard(); return; }
+  if (filterCache[key]) { filteredStats = filterCache[key]; renderLeaderboard(); return; }
+  const from = getDateRange(key);
+  const { data } = await db.from('sessions').select('user_id,stage,word_count,logged_at').gte('logged_at', from);
+  filteredStats = computeStatsFromSessions(data || []);
+  filterCache[key] = filteredStats;
+  renderLeaderboard();
+}
+
+function getDateRange(filter) {
+  const now = new Date(); const today = now.toISOString().slice(0,10);
+  if (filter === 'today') return today + 'T00:00:00';
+  if (filter === 'week') { const m = new Date(now); m.setDate(now.getDate() - (now.getDay()||7) + 1); return m.toISOString().slice(0,10) + 'T00:00:00'; }
+  if (filter === 'month') return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10) + 'T00:00:00';
+  if (filter === 'alltime') return '2000-01-01T00:00:00';
+  return now.getFullYear() + '-01-01T00:00:00';
+}
+
+function computeStatsFromSessions(sessions) {
+  const map = {};
+  for (const s of sessions) {
+    if (!map[s.user_id]) map[s.user_id] = [];
+    map[s.user_id].push(s);
+  }
+  return Object.entries(map).map(([user_id, ss]) => ({
+    user_id,
+    flow_words:    ss.filter(s=>s.stage==='flow'&&s.word_count>0).reduce((a,s)=>a+s.word_count,0),
+    plan_words:    ss.filter(s=>s.stage==='plan'&&s.word_count>0).reduce((a,s)=>a+s.word_count,0),
+    edit_sessions: ss.filter(s=>s.stage==='edit').length,
+    plan_sessions: ss.filter(s=>s.stage==='plan').length,
+    active_days:   new Set(ss.map(s=>s.logged_at.slice(0,10))).size,
+  }));
+}
+
 function renderMetricPills() {
   document.getElementById('metric-pills').innerHTML = METRICS.map(m =>
     `<div class="metric-pill${m.key===currentMetric?' active':''}" onclick="setMetric('${m.key}')">${m.label}</div>`).join('');
@@ -1243,17 +1356,27 @@ function renderLeaderboard() {
   const mmap = { flow_words:s=>s.flow_words||0, total_words:s=>(s.flow_words||0)+(s.plan_words||0), streak:s=>calcStreakForUser(s.user_id), edit_sessions:s=>s.edit_sessions||0, plan_sessions:s=>s.plan_sessions||0, active_days:s=>s.active_days||0 };
   const mlabel = { flow_words:'flow words', total_words:'total words', streak:'days', edit_sessions:'sessions', plan_sessions:'sessions', active_days:'days' };
   const fn = mmap[currentMetric] || (s => s.flow_words || 0);
-  const rows = allProfiles.map(p => { const stats = allStats.find(s => s.user_id === p.id) || {}; return {...p,...stats,value:fn({...stats,user_id:p.id}),isMe:p.id===currentUser.id}; }).sort((a,b) => b.value - a.value);
+  const statsSource = currentTimeFilter === 'year' ? allStats : filteredStats;
+  const rows = allProfiles.map(p => { const stats = statsSource.find(s => s.user_id === p.id) || {}; return {...p,...stats,value:fn({...stats,user_id:p.id}),isMe:p.id===currentUser.id}; }).sort((a,b) => b.value - a.value);
   const max = rows[0]?.value || 1;
   const rs = ['①','②','③','④','⑤']; const rc = ['gold','silver','','',''];
-  document.getElementById('lb-table').innerHTML = `<div style="border:1px solid var(--border);border-radius:4px;overflow:hidden">${rows.map((w,i) => `<div class="lb-row${w.isMe?' you':''}" onclick="openH2H('${w.id}')"><div class="lb-rank-num ${rc[i]||''}">${rs[i]||i+1}</div><div class="lb-name-cell">${w.display_name}${w.isMe?' <span style="font-size:9px;color:var(--muted)">(you)</span>':''}</div><div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${max>0?Math.round((w.value/max)*100):0}%;background:${w.isMe?'var(--sepia-dark)':'#2c5f8a'}"></div></div><div class="lb-val">${w.value.toLocaleString()} ${mlabel[currentMetric]}</div></div></div>`).join('')}</div>`;
+  const filterLabel = TIME_FILTERS.find(f=>f.key===currentTimeFilter)?.label || '';
+  document.getElementById('lb-table').innerHTML = `<div style="border:1px solid var(--border);border-radius:4px;overflow:hidden">${rows.map((w,i) => `<div class="lb-row${w.isMe?' you':''}" onclick="openH2H('${w.id}')"><div class="lb-rank-num ${rc[i]||''}">${rs[i]||i+1}</div><div class="lb-name-cell">${w.display_name}${w.isMe?' <span style="font-size:9px;color:var(--muted)">(you)</span>':''}</div><div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${max>0?Math.round((w.value/max)*100):0}%;background:${w.isMe?'var(--sepia-dark)':'#2c5f8a'}"></div></div><div class="lb-val">${w.value.toLocaleString()} ${mlabel[currentMetric]}</div></div></div>`).join('')}</div><div style="font-size:9px;color:var(--muted);font-style:italic;margin-top:6px">Showing: ${filterLabel}</div>`;
 }
 function calcStreakForUser(uid) { return uid === currentUser.id ? calcStreak(mySessions) : 0; }
+
 async function openH2H(otherId) {
   if (otherId === currentUser.id) return;
   const other = allProfiles.find(p => p.id === otherId); if (!other) return;
+  h2hCurrentOther = other;
+  h2hSortBy = 'words'; h2hSortDir = 'desc'; h2hStatusFilter = 'all';
   const year = new Date().getFullYear();
-  const { data: otherSessions } = await db.from('sessions').select('*').eq('user_id', otherId).gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false });
+  const [sessRes, projRes] = await Promise.all([
+    db.from('sessions').select('*').eq('user_id', otherId).gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false }),
+    db.from('projects').select('*').eq('user_id', otherId).eq('archived', false),
+  ]);
+  h2hOtherSessions = sessRes.data || [];
+  h2hOtherProjects = projRes.data || [];
   const myStats = allStats.find(s => s.user_id === currentUser.id) || {};
   const otherStats = allStats.find(s => s.user_id === otherId) || {};
   const myFlow = myStats.flow_words || 0; const otherFlow = otherStats.flow_words || 0;
@@ -1265,10 +1388,85 @@ async function openH2H(otherId) {
     <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic">vs</div><div style="font-size:9px;margin-top:6px;color:var(--muted)">${leader} leads by</div><div style="font-size:16px;color:var(--accent);margin-top:2px">${Math.abs(diff).toLocaleString()}</div></div>
     <div class="compare-person"><div class="compare-name">${other.display_name}</div><div class="compare-words" style="color:#2c5f8a">${otherFlow.toLocaleString()}</div><div style="font-size:9px;color:var(--muted)">flow words this year</div><div style="margin-top:8px"><div class="cstage"><span>📋 Plan</span><span>${(otherStats.plan_words||0).toLocaleString()}</span></div><div class="cstage"><span>✍️ Flow</span><span>${otherFlow.toLocaleString()}</span></div><div class="cstage"><span>✂️ Edit sessions</span><span>${otherStats.edit_sessions||0}</span></div></div></div>`;
   renderHeatmapFromSessions('heatmap-h2h-me', mySessions);
-  renderHeatmapFromSessions('heatmap-h2h-them', otherSessions || []);
+  renderHeatmapFromSessions('heatmap-h2h-them', h2hOtherSessions);
+  renderH2HProjects();
   document.getElementById('league-main').style.display = 'none';
   document.getElementById('league-h2h').style.display = 'block';
 }
+
+function renderH2HProjects() {
+  const sorts = [
+    {key:'words',  label:'Most words'},
+    {key:'name',   label:'A–Z'},
+    {key:'recent', label:'Most recent'},
+    {key:'sessions',label:'Most sessions'},
+  ];
+  const statuses = ['all','active','completed','abandoned'];
+
+  document.getElementById('h2h-filter-row').innerHTML = statuses.map(s =>
+    `<div class="metric-pill${h2hStatusFilter===s?' active':''}" style="font-size:9px;padding:3px 9px" onclick="setH2HFilter('${s}')">${s.charAt(0).toUpperCase()+s.slice(1)}</div>`
+  ).join('');
+
+  document.getElementById('h2h-sort-row').innerHTML = sorts.map(s =>
+    `<div class="metric-pill${h2hSortBy===s.key?' active':''}" style="font-size:9px;padding:3px 9px" onclick="setH2HSort('${s.key}')">${s.label}${h2hSortBy===s.key?(h2hSortDir==='desc'?' ↓':' ↑'):''}</div>`
+  ).join('');
+
+  const myProjsData = buildH2HProjData(myProjects, mySessions);
+  const otherProjsData = buildH2HProjData(h2hOtherProjects, h2hOtherSessions);
+  const sortAndFilter = (data) => {
+    let d = h2hStatusFilter === 'all' ? data : data.filter(p => (p.status||'active') === h2hStatusFilter);
+    d.sort((a,b) => {
+      let av=0,bv=0;
+      if (h2hSortBy==='words')    { av=a.flowWords;   bv=b.flowWords; }
+      if (h2hSortBy==='name')     { return h2hSortDir==='asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name); }
+      if (h2hSortBy==='recent')   { av=a.lastDate||''; bv=b.lastDate||''; }
+      if (h2hSortBy==='sessions') { av=a.sessions;    bv=b.sessions; }
+      return h2hSortDir==='desc' ? bv-av : av-bv;
+    });
+    return d;
+  };
+
+  const renderProjList = (data, name) => {
+    if (!data.length) return `<div style="font-size:11px;color:var(--muted);font-style:italic">No projects${h2hStatusFilter!=='all'?' matching filter':''}</div>`;
+    return data.map(p => {
+      const statusCls = `status-${p.status||'active'}`;
+      const lastDate = p.lastDate ? new Date(p.lastDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '—';
+      return `<div class="h2h-project-row">
+        <div style="flex:1">
+          <div style="font-family:'Playfair Display',serif;font-size:12px">${p.name}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">${p.flowWords.toLocaleString()} words · ${p.sessions} sessions · last ${lastDate}</div>
+        </div>
+        <span class="status-badge ${statusCls}">${p.status||'active'}</span>
+      </div>`;
+    }).join('');
+  };
+
+  document.getElementById('h2h-projects-cols').innerHTML = `
+    <div class="panel">
+      <div class="section-title" style="margin-bottom:8px">${myProfile.display_name}</div>
+      ${renderProjList(sortAndFilter(myProjsData), myProfile.display_name)}
+    </div>
+    <div class="panel">
+      <div class="section-title" style="margin-bottom:8px">${h2hCurrentOther?.display_name||''}</div>
+      ${renderProjList(sortAndFilter(otherProjsData), h2hCurrentOther?.display_name||'')}
+    </div>`;
+}
+
+function buildH2HProjData(projects, sessions) {
+  return projects.map(p => {
+    const ps = sessions.filter(s => s.project_id === p.id);
+    const flowWords = ps.filter(s=>s.stage==='flow'&&s.word_count>0).reduce((a,s)=>a+s.word_count,0);
+    const lastDate = ps.length ? ps.map(s=>s.logged_at).sort().reverse()[0] : null;
+    return { ...p, flowWords, sessions: ps.length, lastDate };
+  });
+}
+
+function setH2HSort(key) {
+  if (h2hSortBy === key) h2hSortDir = h2hSortDir === 'desc' ? 'asc' : 'desc';
+  else { h2hSortBy = key; h2hSortDir = 'desc'; }
+  renderH2HProjects();
+}
+function setH2HFilter(status) { h2hStatusFilter = status; renderH2HProjects(); }
 function showLeagueMain() { document.getElementById('league-main').style.display = 'block'; document.getElementById('league-h2h').style.display = 'none'; }
 
 // ── Achievement helpers ────────────────────────────────────────────────────
@@ -1417,7 +1615,10 @@ function renderJournal() {
       const date = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
       const tags = (e.tags || []).map(t => `<span class="journal-tag">${t}</span>`).join('');
       return `<div class="journal-entry-standalone">
-        ${e.title ? `<div class="journal-entry-title">${e.title}</div>` : ''}
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="flex:1">${e.title ? `<div class="journal-entry-title">${e.title}</div>` : ''}</div>
+          <button class="edit-icon-btn" onclick="editJournalEntry('${e.id}')" title="Edit entry">✏️</button>
+        </div>
         <div class="journal-entry-body">${e.body}</div>
         <div class="journal-entry-meta">
           <span class="journal-type-pill jtp-standalone">Journal</span>
@@ -1444,6 +1645,8 @@ function renderJournal() {
 }
 
 function openJournalModal() {
+  editingJournalEntryId = null;
+  document.getElementById('journal-modal-title').textContent = 'New Journal Entry';
   document.getElementById('jm-title').value = '';
   document.getElementById('jm-body').value = '';
   document.getElementById('jm-tags').value = '';
@@ -1451,7 +1654,18 @@ function openJournalModal() {
   document.getElementById('journal-modal-overlay').classList.add('show');
   setTimeout(() => document.getElementById('jm-body').focus(), 80);
 }
-function closeJournalModal() { document.getElementById('journal-modal-overlay').classList.remove('show'); }
+function editJournalEntry(id) {
+  const entry = myJournalEntries.find(e => e.id === id); if (!entry) return;
+  editingJournalEntryId = id;
+  document.getElementById('journal-modal-title').textContent = 'Edit Journal Entry';
+  document.getElementById('jm-title').value = entry.title || '';
+  document.getElementById('jm-body').value = entry.body || '';
+  document.getElementById('jm-tags').value = (entry.tags || []).join(', ');
+  document.getElementById('jm-date').value = entry.entry_date;
+  document.getElementById('journal-modal-overlay').classList.add('show');
+  setTimeout(() => document.getElementById('jm-body').focus(), 80);
+}
+function closeJournalModal() { document.getElementById('journal-modal-overlay').classList.remove('show'); editingJournalEntryId = null; }
 async function saveJournalEntry() {
   const title = document.getElementById('jm-title').value.trim();
   const body = document.getElementById('jm-body').value.trim();
@@ -1459,18 +1673,62 @@ async function saveJournalEntry() {
   const date = document.getElementById('jm-date').value;
   if (!body) { showToast('Please write something before saving.'); return; }
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const { data, error } = await db.from('journal_entries').insert({
-    user_id: currentUser.id,
-    title: title || null,
-    body,
-    tags,
-    entry_date: date || new Date().toISOString().slice(0,10),
-  }).select().single();
-  if (error) { showToast('Error saving entry. Try again.'); return; }
-  myJournalEntries.unshift(data);
-  closeJournalModal();
-  renderJournal();
-  showToast('✓ Journal entry saved');
+  if (editingJournalEntryId) {
+    const { data, error } = await db.from('journal_entries').update({ title: title||null, body, tags, entry_date: date }).eq('id', editingJournalEntryId).select().single();
+    if (error) { showToast('Error saving entry.'); return; }
+    const idx = myJournalEntries.findIndex(e => e.id === editingJournalEntryId);
+    if (idx >= 0) myJournalEntries[idx] = data;
+    closeJournalModal(); renderJournal(); showToast('✓ Entry updated');
+  } else {
+    const { data, error } = await db.from('journal_entries').insert({ user_id: currentUser.id, title: title||null, body, tags, entry_date: date||new Date().toISOString().slice(0,10) }).select().single();
+    if (error) { showToast('Error saving entry. Try again.'); return; }
+    myJournalEntries.unshift(data);
+    closeJournalModal(); renderJournal(); showToast('✓ Journal entry saved');
+  }
+}
+
+// ── Session editing ────────────────────────────────────────────────────────
+function openSessionEdit(sessionId) {
+  const s = mySessions.find(x => x.id === sessionId); if (!s) return;
+  editingSessionId = sessionId;
+  document.getElementById('se-stage').value = s.stage;
+  document.getElementById('se-words').value = s.word_count;
+  document.getElementById('se-note').value = s.note || '';
+  document.getElementById('se-delete-confirm').style.display = 'none';
+  const sel = document.getElementById('se-project');
+  sel.innerHTML = '<option value="">— no project —</option>' + myProjects.map(p => `<option value="${p.id}"${p.id===s.project_id?' selected':''}>${p.name}</option>`).join('');
+  document.getElementById('session-edit-overlay').classList.add('show');
+}
+function closeSessionEdit() { document.getElementById('session-edit-overlay').classList.remove('show'); editingSessionId = null; }
+async function saveSessionEdit() {
+  const stage = document.getElementById('se-stage').value;
+  const words = parseInt(document.getElementById('se-words').value) || 0;
+  const projectId = document.getElementById('se-project').value || null;
+  const note = document.getElementById('se-note').value.trim();
+  const { data, error } = await db.from('sessions').update({ stage, word_count: words, project_id: projectId, note: note||null }).eq('id', editingSessionId).select().single();
+  if (error) { showToast('Error saving session.'); return; }
+  const idx = mySessions.findIndex(s => s.id === editingSessionId);
+  if (idx >= 0) mySessions[idx] = data;
+  closeSessionEdit();
+  const year = new Date().getFullYear();
+  const { data: statsRes } = await db.from('yearly_stats').select('*').eq('year', year);
+  allStats = statsRes || [];
+  renderStats(); renderPacing(); renderWeekBars(); renderHeatmapFromSessions('heatmap-me', mySessions);
+  renderTodaySessions(); renderProjects(); renderAnalytics(); renderJournal();
+  showToast('✓ Session updated');
+}
+function confirmDeleteSession() { document.getElementById('se-delete-confirm').style.display = 'block'; }
+async function executeDeleteSession() {
+  const { error } = await db.from('sessions').delete().eq('id', editingSessionId);
+  if (error) { showToast('Error deleting session.'); return; }
+  mySessions = mySessions.filter(s => s.id !== editingSessionId);
+  closeSessionEdit();
+  const year = new Date().getFullYear();
+  const { data: statsRes } = await db.from('yearly_stats').select('*').eq('year', year);
+  allStats = statsRes || [];
+  renderStats(); renderPacing(); renderWeekBars(); renderHeatmapFromSessions('heatmap-me', mySessions);
+  renderTodaySessions(); renderProjects(); renderAnalytics(); renderJournal();
+  showToast('✓ Session deleted');
 }
 
 // ── Stage / counting ───────────────────────────────────────────────────────
