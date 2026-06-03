@@ -11,7 +11,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(--ink);min-height:100vh;}
 
-/* ── Auth screens ── */
+/* ── Auth ── */
 .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
 .auth-card{background:white;border:1px solid var(--border);border-radius:8px;padding:36px 40px;width:100%;max-width:380px;}
 .auth-logo{font-family:'Playfair Display',serif;font-size:28px;font-style:italic;text-align:center;margin-bottom:6px;}
@@ -51,7 +51,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .stat-sub{font-size:9px;color:var(--muted);margin-top:3px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;}
-.heatmap-grid{display:grid;grid-template-columns:repeat(26,1fr);gap:2px;margin-top:8px;}
+.heatmap-grid{display:grid;gap:2px;margin-top:8px;}
 .heat-cell{aspect-ratio:1;border-radius:1px;cursor:pointer;transition:transform 0.1s;}
 .heat-cell:hover{transform:scale(1.4);z-index:2;}
 .heat-cell.l0{background:var(--border);opacity:0.3;}
@@ -60,7 +60,8 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .heat-cell.l3{background:#c9a96e;opacity:0.85;}
 .heat-cell.l4{background:var(--sepia-dark);}
 .heat-cell.l5{background:var(--ink);}
-.month-labels{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:3px;}
+.heat-empty{background:transparent!important;pointer-events:none;opacity:0;aspect-ratio:1;}
+.month-labels{position:relative;height:14px;margin-top:3px;}
 .heat-tooltip{position:fixed;background:var(--ink);color:var(--parchment);font-size:10px;padding:5px 9px;border-radius:4px;pointer-events:none;white-space:nowrap;z-index:999;opacity:0;transition:opacity 0.12s;border-left:2px solid var(--sepia);}
 .goal-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
 .goal-label{font-size:10px;min-width:110px;}
@@ -70,7 +71,70 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .streak-visual{display:flex;gap:3px;align-items:flex-end;height:70px;}
 .streak-bar{flex:1;border-radius:2px 2px 0 0;min-height:4px;cursor:pointer;}
 
-/* Write */
+/* ── Analytics panel ── */
+.analytics-stage-card{background:white;border:1px solid var(--border);border-radius:4px;padding:10px;border-top:3px solid;}
+.analytics-stage-val{font-family:'Playfair Display',serif;font-size:18px;line-height:1;margin-bottom:1px;}
+.analytics-stage-lbl{font-size:8px;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);}
+.analytics-stage-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.analytics-prop-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:10px;}
+
+/* ── Project detail overlay ── */
+.project-detail-overlay{position:fixed;top:50px;left:0;right:0;bottom:0;background:var(--parchment);z-index:49;overflow-y:auto;display:none;}
+.project-detail-overlay.show{display:block;}
+.project-detail-inner{padding:16px;max-width:900px;margin:0 auto;}
+.proj-month-chart{display:flex;align-items:flex-end;gap:3px;height:80px;margin-bottom:4px;}
+.proj-month-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+.proj-month-fill{width:100%;border-radius:2px 2px 0 0;}
+.proj-month-empty{width:100%;height:2px;background:var(--border);border-radius:1px;}
+.proj-month-labels{display:flex;gap:3px;}
+.proj-month-lbl{flex:1;text-align:center;font-size:7px;color:var(--muted);}
+.project-card-clickable{cursor:pointer;transition:background 0.12s;border-radius:4px;padding:4px;margin:-4px;}
+.project-card-clickable:hover{background:rgba(201,169,110,0.07);}
+
+/* ── Pacing panel ── */
+.pacing-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;}
+.pacing-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
+.pacing-goal-display{font-family:'Playfair Display',serif;font-size:18px;}
+.pacing-goal-edit{font-size:9px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:'DM Mono',monospace;padding:0;}
+.pacing-goal-edit:hover{color:var(--sepia-dark);}
+.pacing-bar-wrap{margin-bottom:14px;}
+.pacing-bar-bg{width:100%;height:10px;background:var(--sepia-light);border-radius:5px;overflow:visible;position:relative;}
+.pacing-bar-fill{height:100%;border-radius:5px;transition:width 0.8s;position:absolute;top:0;left:0;}
+.pacing-bar-track{position:relative;height:10px;border-radius:5px;overflow:hidden;background:var(--sepia-light);}
+.pacing-bar-target-wrap{position:relative;height:16px;margin-top:-3px;}
+.pacing-bar-target{position:absolute;top:0;width:2px;height:16px;background:var(--ink);border-radius:1px;transform:translateX(-50%);}
+.pacing-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.pacing-stat{text-align:center;padding:8px;background:white;border:1px solid var(--border);border-radius:4px;}
+.pacing-stat-val{font-family:'Playfair Display',serif;font-size:16px;line-height:1;margin-bottom:2px;}
+.pacing-stat-lbl{font-size:8px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);}
+.pacing-verdict{font-size:11px;padding:8px 12px;border-radius:4px;text-align:center;font-style:italic;}
+.pacing-verdict.ahead{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9;}
+.pacing-verdict.behind{background:#fce4ec;color:#b71c1c;border:1px solid #f8bbd0;}
+.pacing-verdict.on-track{background:#fff8e1;color:#6d4c00;border:1px solid var(--sepia-light);}
+.goal-edit-inline{display:none;align-items:center;gap:8px;margin-bottom:12px;}
+.goal-edit-inline.show{display:flex;}
+.goal-edit-input{padding:6px 10px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:13px;width:140px;background:white;color:var(--ink);}
+.goal-save-btn{padding:6px 12px;background:var(--ink);color:var(--parchment);border:none;border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+.goal-cancel-btn{padding:6px 12px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+
+/* ── Project creation ── */
+.new-project-btn{display:flex;align-items:center;gap:6px;margin-top:12px;padding:7px 12px;background:none;border:1px dashed var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;width:100%;transition:all 0.15s;}
+.new-project-btn:hover{border-color:var(--sepia);color:var(--sepia-dark);background:rgba(201,169,110,0.05);}
+.new-project-form{display:none;margin-top:12px;padding:14px;background:white;border:1px solid var(--border);border-radius:4px;}
+.new-project-form.show{display:block;}
+.np-label{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:4px;margin-top:10px;}
+.np-label:first-child{margin-top:0;}
+.np-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;background:var(--parchment);color:var(--ink);}
+.np-input:focus{outline:2px solid var(--sepia);border-color:var(--sepia);}
+.color-swatches{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.color-swatch{width:22px;height:22px;border-radius:3px;cursor:pointer;border:2px solid transparent;transition:transform 0.1s;}
+.color-swatch:hover{transform:scale(1.15);}
+.color-swatch.selected{border-color:var(--ink);}
+.np-actions{display:flex;gap:8px;margin-top:12px;}
+.np-save{padding:7px 16px;background:var(--ink);color:var(--parchment);border:none;border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+.np-cancel{padding:7px 16px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+
+/* ── Write page ── */
 .timer-block{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px;margin-bottom:12px;}
 .timer-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .timer-display{font-size:32px;font-family:'Playfair Display',serif;color:var(--ink);min-width:80px;letter-spacing:1px;}
@@ -81,6 +145,8 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .tbtn.pause-btn{background:var(--sepia-dark);color:white;border-color:var(--sepia-dark);}
 .tbtn.stop-btn{background:var(--accent);color:white;border-color:var(--accent);}
 .tbtn.save-btn{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
+.tbtn.discard-btn{background:none;border-color:var(--border);color:var(--muted);}
+.tbtn.discard-btn:hover{background:var(--accent);color:white;border-color:var(--accent);}
 .stage-tabs{display:flex;margin-bottom:10px;}
 .stage-tab{flex:1;padding:9px;text-align:center;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;border:1px solid var(--border);background:var(--surface);transition:all 0.15s;font-family:'DM Mono',monospace;}
 .stage-tab:first-child{border-radius:4px 0 0 4px;}
@@ -112,7 +178,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .entry-time{margin-left:auto;color:var(--muted);font-size:9px;flex-shrink:0;}
 .entry-note{font-size:10px;color:var(--muted);font-style:italic;margin-top:3px;}
 
-/* League */
+/* ── League ── */
 .metric-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .metric-pill{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:10px;cursor:pointer;background:var(--surface);transition:all 0.15s;text-transform:uppercase;letter-spacing:0.4px;}
 .metric-pill.active{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
@@ -135,30 +201,90 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .cstage{font-size:10px;display:flex;justify-content:space-between;color:var(--muted);padding:2px 0;}
 .cstage span:last-child{color:var(--ink);}
 
-/* Trophies */
+/* ── Trophies ── */
+.trophy-section-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.trophy-group-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
+.trophy-group-card:hover{border-color:var(--sepia);transform:translateY(-1px);}
+.trophy-group-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.trophy-group-icon{font-size:20px;flex-shrink:0;}
+.trophy-group-name{font-family:'Playfair Display',serif;font-size:13px;}
+.trophy-group-desc{font-size:9px;color:var(--muted);margin-top:1px;}
+.trophy-group-badge{margin-left:auto;flex-shrink:0;}
+.tier-dots{display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap;align-items:center;}
+.tier-dot{width:26px;height:26px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;flex-shrink:0;transition:transform 0.1s;}
+.tier-dot.is-unlocked{transform:scale(1.1);}
+.tier-dot.is-current{transform:scale(1.25);}
+.tier-dot.is-locked{opacity:0.18;filter:grayscale(0.7);}
+.tier-progress-text{font-size:9px;color:var(--muted);margin-top:4px;}
+.tier-pct-text{font-size:8px;color:var(--muted);font-style:italic;margin-top:2px;}
 .achievements-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.trophy-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px;text-align:center;transition:all 0.2s;}
+.trophy-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px;text-align:center;transition:all 0.2s;cursor:pointer;}
 .trophy-card.locked{opacity:0.35;filter:grayscale(1);}
 .trophy-card.unlocked{border-color:var(--sepia);}
 .trophy-card.unlocked:hover{transform:translateY(-2px);}
 .trophy-icon{font-size:24px;margin-bottom:6px;display:block;}
 .trophy-name{font-family:'Playfair Display',serif;font-size:12px;margin-bottom:3px;}
 .trophy-desc{font-size:9px;color:var(--muted);line-height:1.4;}
-.trophy-badge{display:inline-block;font-size:8px;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-top:5px;letter-spacing:0.5px;}
-.badge-gold{background:#f0e0a0;color:#7a5c00;}
-.badge-silver{background:#dde3e8;color:#4a5560;}
-.badge-bronze{background:#e8d4c0;color:#6b4020;}
-.badge-locked{background:var(--border);color:var(--muted);}
-.mini-prog{height:3px;background:var(--sepia-light);border-radius:2px;margin-top:4px;overflow:hidden;}
-.mini-prog-fill{height:100%;background:var(--sepia);border-radius:2px;}
+.trophy-pct{font-size:8px;color:var(--muted);font-style:italic;margin-top:4px;}
+.trophy-badge{display:inline-block;font-size:8px;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-top:5px;letter-spacing:0.5px;border:1px solid transparent;}
+.badge-unique  {background:#f7f0e0;color:#8b6914;border-color:#c9a96e;}
+.badge-wood    {background:#e8d5b0;color:#3d2b0e;border-color:#a07840;}
+.badge-bronze  {background:#f0ddd0;color:#6b3010;border-color:#cd7f32;}
+.badge-silver  {background:#e4e8ec;color:#3a4550;border-color:#9da8b0;}
+.badge-gold    {background:#f8edb0;color:#6a5000;border-color:#c8a000;}
+.badge-platinum{background:#eaeaf8;color:#404080;border-color:#8888c8;}
+.badge-sapphire{background:#d0e0f8;color:#0a2a6a;border-color:#2060c0;}
+.badge-ruby    {background:#f8d0d4;color:#6a0a20;border-color:#c02040;}
+.badge-emerald {background:#c8f0d8;color:#0a4020;border-color:#20a050;}
+.badge-diamond {background:#d8f8ff;color:#004060;border-color:#40b8e0;}
+.badge-locked  {background:var(--border);color:var(--muted);border-color:var(--border);}
 
-/* Journal */
-.journal-entry{padding:12px;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;background:var(--surface);}
-.journal-date{font-size:9px;color:var(--muted);margin-bottom:4px;}
-.journal-note{font-size:12px;font-style:italic;color:var(--ink);margin-bottom:4px;}
-.journal-meta{font-size:9px;color:var(--muted);}
+/* ── Achievement detail modal ── */
+.ach-detail-overlay{position:fixed;inset:0;background:rgba(26,19,16,0.7);display:flex;align-items:center;justify-content:center;z-index:210;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.ach-detail-overlay.show{opacity:1;pointer-events:all;}
+.ach-detail-box{background:var(--parchment);border:1.5px solid var(--border);border-radius:8px;padding:24px 28px;max-width:420px;width:92%;max-height:80vh;overflow-y:auto;}
+.ach-detail-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.ach-detail-icon{font-size:32px;flex-shrink:0;}
+.ach-detail-name{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:3px;}
+.ach-detail-desc{font-size:10px;color:var(--muted);}
+.ach-tier-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ach-tier-row:last-child{border-bottom:none;}
+.ach-tier-badge-lg{padding:3px 10px;border-radius:3px;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;min-width:72px;text-align:center;border:1px solid transparent;}
+.ach-tier-req{font-size:10px;flex:1;color:var(--ink);}
+.ach-tier-date{font-size:9px;color:var(--muted);text-align:right;white-space:nowrap;}
+.ach-tier-pct{font-size:8px;color:var(--muted);font-style:italic;margin-top:1px;text-align:right;}
+.ach-detail-close{width:100%;margin-top:16px;padding:9px;background:var(--ink);color:var(--parchment);border:none;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;}
 
-/* Overlays */
+/* ── Journal ── */
+.new-entry-btn{padding:5px 12px;background:var(--ink);color:var(--parchment);border:none;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;transition:background 0.15s;flex-shrink:0;}
+.new-entry-btn:hover{background:var(--sepia-dark);}
+.journal-entry-standalone{padding:14px;border:1px solid var(--sepia-light);border-left:3px solid var(--sepia);border-radius:4px;margin-bottom:8px;background:white;}
+.journal-entry-session{padding:10px 12px;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;background:var(--surface);}
+.journal-entry-title{font-family:'Playfair Display',serif;font-size:14px;margin-bottom:5px;}
+.journal-entry-body{font-size:11px;line-height:1.65;color:var(--ink);white-space:pre-wrap;word-break:break-word;}
+.journal-entry-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;}
+.journal-tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:8px;background:var(--sepia-light);color:var(--sepia-dark);text-transform:uppercase;letter-spacing:0.4px;}
+.journal-type-pill{display:inline-block;padding:1px 6px;border-radius:2px;font-size:8px;text-transform:uppercase;letter-spacing:0.4px;}
+.jtp-standalone{background:var(--sepia-light);color:var(--sepia-dark);}
+.jtp-session{background:var(--border);color:var(--muted);}
+.journal-entry-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.journal-entry-date{font-size:9px;color:var(--muted);}
+
+/* ── Journal new entry modal ── */
+.journal-modal-overlay{position:fixed;inset:0;background:rgba(26,19,16,0.7);display:flex;align-items:center;justify-content:center;z-index:210;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.journal-modal-overlay.show{opacity:1;pointer-events:all;}
+.journal-modal-box{background:var(--parchment);border:1.5px solid var(--border);border-radius:8px;padding:24px 28px;max-width:480px;width:94%;max-height:88vh;overflow-y:auto;}
+.journal-modal-title{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.jm-label{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:4px;margin-top:12px;display:block;}
+.jm-input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;background:white;color:var(--ink);}
+.jm-input:focus{outline:2px solid var(--sepia);border-color:var(--sepia);}
+.jm-textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;background:white;color:var(--ink);min-height:130px;resize:vertical;line-height:1.6;}
+.jm-textarea:focus{outline:2px solid var(--sepia);border-color:var(--sepia);}
+.jm-actions{display:flex;gap:8px;margin-top:16px;}
+.jm-save{padding:9px 20px;background:var(--ink);color:var(--parchment);border:none;border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;}
+.jm-cancel{padding:9px 20px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;}
+
+/* ── Overlays ── */
 .confirm-overlay,.achievement-overlay{position:fixed;inset:0;background:rgba(26,19,16,0.7);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity 0.2s;}
 .confirm-overlay.show,.achievement-overlay.show{opacity:1;pointer-events:all;}
 .confirm-box{background:var(--parchment);border:1.5px solid var(--border);border-radius:6px;padding:24px 28px;max-width:300px;width:90%;text-align:center;}
@@ -167,6 +293,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .confirm-btns{display:flex;gap:8px;justify-content:center;}
 .confirm-yes{padding:8px 20px;background:var(--ink);color:var(--parchment);border:none;border-radius:4px;cursor:pointer;font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;}
 .confirm-no{padding:8px 20px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+.confirm-yes.danger{background:var(--accent);}
 .achievement-popup{background:var(--parchment);border:2px solid var(--sepia);border-radius:8px;padding:28px 36px;text-align:center;transform:scale(0.85);transition:transform 0.3s;max-width:300px;width:90%;}
 .achievement-overlay.show .achievement-popup{transform:scale(1);}
 .ach-icon{font-size:52px;display:block;margin-bottom:10px;}
@@ -178,6 +305,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .loading-screen{position:fixed;inset:0;background:var(--parchment);display:flex;align-items:center;justify-content:center;z-index:500;}
 .loading-logo{font-family:'Playfair Display',serif;font-size:32px;font-style:italic;}
 .loading-logo span{color:var(--sepia);}
+
 @media(max-width:600px){
   .stats-row{grid-template-columns:repeat(2,1fr);}
   .two-col{grid-template-columns:1fr;}
@@ -185,15 +313,13 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
   .edit-before-after{grid-template-columns:1fr;}
   .timer-row{gap:6px;}
   .nav-tab{padding:6px 7px;font-size:9px;}
+  .pacing-stats{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
 <body>
 
-<!-- Loading -->
-<div class="loading-screen" id="loading-screen">
-  <div class="loading-logo">ink<span>well</span></div>
-</div>
+<div class="loading-screen" id="loading-screen"><div class="loading-logo">ink<span>well</span></div></div>
 
 <!-- Auth -->
 <div class="auth-wrap" id="auth-wrap" style="display:none">
@@ -244,7 +370,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">Flow words 2025</div><div class="stat-value" id="dash-flow">—</div><div class="stat-sub">new drafts only</div></div>
+      <div class="stat-card"><div class="stat-label">Flow words <span id="dash-year">2025</span></div><div class="stat-value" id="dash-flow">—</div><div class="stat-sub">new drafts only</div></div>
       <div class="stat-card"><div class="stat-label">Current streak</div><div class="stat-value" id="dash-streak">— 🔥</div><div class="stat-sub">days writing</div></div>
       <div class="stat-card"><div class="stat-label">Edit sessions</div><div class="stat-value" id="dash-edits" style="color:var(--edit)">—</div><div class="stat-sub">revisions logged</div></div>
       <div class="stat-card"><div class="stat-label">Projects</div><div class="stat-value" id="dash-projects">—</div><div class="stat-sub">active</div></div>
@@ -256,19 +382,73 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
         <div style="display:flex;justify-content:space-between;margin-top:3px"><span style="font-size:8px;color:var(--muted)">Mon</span><span style="font-size:8px;color:var(--muted)">Sun</span></div>
         <div style="display:flex;gap:10px;margin-top:8px"><span style="font-size:9px;color:var(--plan)">■ Plan</span><span style="font-size:9px;color:var(--flow)">■ Flow</span><span style="font-size:9px;color:var(--edit)">■ Edit</span></div>
       </div>
-      <div class="panel">
-        <div class="section-title">Annual goals</div>
-        <div class="goal-row"><div class="goal-label">Flow words (100k)</div><div style="flex:1"><div class="goal-prog-bg"><div class="goal-prog-fill" id="g-flow" style="width:0%;background:var(--flow)"></div></div></div><div class="goal-pct" id="g-flow-pct">0%</div></div>
-        <div class="goal-row"><div class="goal-label">Edit sessions (60)</div><div style="flex:1"><div class="goal-prog-bg"><div class="goal-prog-fill" id="g-edit" style="width:0%;background:var(--edit)"></div></div></div><div class="goal-pct" id="g-edit-pct">0%</div></div>
-        <div class="goal-row"><div class="goal-label">Streak days (30)</div><div style="flex:1"><div class="goal-prog-bg"><div class="goal-prog-fill" id="g-streak" style="width:0%;background:var(--sepia-dark)"></div></div></div><div class="goal-pct" id="g-streak-pct">0%</div></div>
+      <div class="pacing-panel" id="pacing-panel">
+        <div class="pacing-header">
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:3px">Annual goal</div>
+            <div class="pacing-goal-display" id="pacing-goal-display">—</div>
+          </div>
+          <button class="pacing-goal-edit" onclick="toggleGoalEdit()">edit goal</button>
+        </div>
+        <div class="goal-edit-inline" id="goal-edit-inline">
+          <input class="goal-edit-input" id="goal-edit-input" type="number" min="1000" step="1000" placeholder="e.g. 100000">
+          <button class="goal-save-btn" onclick="saveAnnualGoal()">Save</button>
+          <button class="goal-cancel-btn" onclick="toggleGoalEdit()">Cancel</button>
+        </div>
+        <div class="pacing-bar-wrap">
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px">
+            <span id="pacing-bar-label">0 words written</span>
+            <span id="pacing-bar-pct">0%</span>
+          </div>
+          <div class="pacing-bar-track">
+            <div class="pacing-bar-fill" id="pacing-bar-fill" style="width:0%;background:var(--flow)"></div>
+          </div>
+          <div class="pacing-bar-target-wrap">
+            <div class="pacing-bar-target" id="pacing-bar-target" style="left:0%"></div>
+          </div>
+          <div style="font-size:8px;color:var(--muted);margin-top:1px;text-align:right">▲ where you should be today</div>
+        </div>
+        <div class="pacing-stats" id="pacing-stats"></div>
+        <div class="pacing-verdict" id="pacing-verdict"></div>
       </div>
     </div>
     <div class="panel" style="margin-bottom:16px">
-      <div class="section-title" id="heatmap-title">2025 writing heatmap</div>
+      <div class="section-title" id="heatmap-title">writing heatmap</div>
       <div class="heatmap-grid" id="heatmap-me"></div>
       <div class="month-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
     </div>
-    <div class="panel"><div class="section-title">Projects</div><div id="project-list"><div style="font-size:11px;color:var(--muted)">Loading projects…</div></div></div>
+    <div class="panel">
+      <div class="section-title">Projects</div>
+      <div id="project-list"><div style="font-size:11px;color:var(--muted)">Loading projects…</div></div>
+      <button class="new-project-btn" onclick="toggleNewProjectForm()">＋ New project</button>
+      <div class="new-project-form" id="new-project-form">
+        <div class="np-label">Project name</div>
+        <input class="np-input" id="np-name" type="text" placeholder="e.g. The Glass Meridian" maxlength="80">
+        <div class="np-label">Word goal</div>
+        <input class="np-input" id="np-goal" type="number" min="100" step="1000" placeholder="e.g. 80000" value="80000">
+        <div class="np-label">Colour</div>
+        <div class="color-swatches" id="color-swatches"></div>
+        <div class="np-actions">
+          <button class="np-save" onclick="createProject()">Create project</button>
+          <button class="np-cancel" onclick="toggleNewProjectForm()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)">
+        <div class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">Stage analytics</div>
+        <div style="font-size:9px;color:var(--muted)" id="analytics-year-label"></div>
+      </div>
+      <div id="analytics-content"><div style="font-size:11px;color:var(--muted)">Loading…</div></div>
+    </div>
+  </div>
+
+  <!-- PROJECT DETAIL OVERLAY -->
+  <div class="project-detail-overlay" id="project-detail-overlay">
+    <div class="project-detail-inner">
+      <button class="back-btn" onclick="closeProjectDetail()">← Back to desk</button>
+      <div id="project-detail-content"></div>
+    </div>
   </div>
 
   <!-- WRITE -->
@@ -287,7 +467,8 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
         <button class="tbtn start" id="tbtn-start" onclick="timerStart()">Start</button>
         <button class="tbtn pause-btn" id="tbtn-pause" onclick="timerPause()" style="display:none">Pause</button>
         <button class="tbtn stop-btn" id="tbtn-stop" onclick="timerStop()" style="display:none">Stop</button>
-        <button class="tbtn save-btn" id="tbtn-save" onclick="timerSavePrompt()" style="display:none">Save session time</button>
+        <button class="tbtn save-btn" id="tbtn-save" onclick="timerSavePrompt()" style="display:none">Save</button>
+        <button class="tbtn discard-btn" id="tbtn-discard" onclick="timerDiscardPrompt()" style="display:none">Discard</button>
         <div style="font-size:11px;color:var(--muted)" id="wph-display"></div>
       </div>
     </div>
@@ -342,25 +523,49 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 
   <!-- TROPHIES -->
   <div class="page" id="page-trophies">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><div class="section-title" style="margin-bottom:0" id="trophy-cabinet-title">Trophy cabinet</div><div style="font-size:10px;color:var(--muted)" id="trophy-count"></div></div>
-    <div class="achievements-grid" id="trophies-grid"></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+      <div class="section-title" style="margin-bottom:0" id="trophy-cabinet-title">Trophy cabinet</div>
+      <div style="font-size:10px;color:var(--muted)" id="trophy-count"></div>
+    </div>
+    <div id="trophies-container"></div>
   </div>
 
   <!-- JOURNAL -->
   <div class="page" id="page-journal">
-    <div class="section-title" id="journal-title">Writing journal</div>
-    <div id="journal-entries"><div style="font-size:11px;color:var(--muted)">No notes yet. Add a note when logging a session.</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0" id="journal-title">Writing journal</div>
+      <button class="new-entry-btn" onclick="openJournalModal()">+ New Entry</button>
+    </div>
+    <div style="border-bottom:1px solid var(--border);margin-bottom:12px"></div>
+    <div id="journal-entries"><div style="font-size:11px;color:var(--muted)">No entries yet.</div></div>
   </div>
 </div>
 
-<!-- Overlays -->
+<!-- Save timer confirm -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
     <div class="confirm-title">Save session time?</div>
     <div class="confirm-sub" id="confirm-sub"></div>
-    <div class="confirm-btns"><button class="confirm-yes" onclick="timerConfirmSave()">Yes, save it</button><button class="confirm-no" onclick="closeConfirm()">Cancel</button></div>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="timerConfirmSave()">Yes, save it</button>
+      <button class="confirm-no" onclick="closeConfirm()">Cancel</button>
+    </div>
   </div>
 </div>
+
+<!-- Discard timer confirm -->
+<div class="confirm-overlay" id="discard-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Discard session time?</div>
+    <div class="confirm-sub">This will permanently discard your recorded time and cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="confirm-yes danger" onclick="timerConfirmDiscard()">Yes, discard</button>
+      <button class="confirm-no" onclick="closeDiscard()">No, keep it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Achievement unlock popup -->
 <div class="achievement-overlay" id="ach-overlay">
   <div class="achievement-popup">
     <span class="ach-icon" id="ach-icon">🏆</span>
@@ -370,89 +575,163 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
     <button class="ach-close" onclick="closeAch()">Claim it ✓</button>
   </div>
 </div>
+
+<!-- Achievement detail modal -->
+<div class="ach-detail-overlay" id="ach-detail-overlay">
+  <div class="ach-detail-box">
+    <div class="ach-detail-header">
+      <span class="ach-detail-icon" id="ach-detail-icon"></span>
+      <div>
+        <div class="ach-detail-name" id="ach-detail-name"></div>
+        <div class="ach-detail-desc" id="ach-detail-desc"></div>
+      </div>
+    </div>
+    <div id="ach-detail-tiers"></div>
+    <button class="ach-detail-close" onclick="closeAchDetail()">Close</button>
+  </div>
+</div>
+
+<!-- Journal new entry modal -->
+<div class="journal-modal-overlay" id="journal-modal-overlay">
+  <div class="journal-modal-box">
+    <div class="journal-modal-title">New Journal Entry</div>
+    <span class="jm-label">Title <span style="color:var(--border)">(optional)</span></span>
+    <input class="jm-input" id="jm-title" type="text" placeholder="e.g. A breakthrough on Chapter 7">
+    <span class="jm-label">Entry</span>
+    <textarea class="jm-textarea" id="jm-body" placeholder="What's on your mind?"></textarea>
+    <span class="jm-label">Tags <span style="color:var(--border)">(comma-separated, optional)</span></span>
+    <input class="jm-input" id="jm-tags" type="text" placeholder="e.g. plot, character, inspiration">
+    <span class="jm-label">Date</span>
+    <input class="jm-input" id="jm-date" type="date">
+    <div class="jm-actions">
+      <button class="jm-save" onclick="saveJournalEntry()">Save entry</button>
+      <button class="jm-cancel" onclick="closeJournalModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div class="heat-tooltip" id="heat-tooltip"></div>
 
 <script>
-// ── Supabase init ──────────────────────────────────────────────────────────
+// ── Supabase ───────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://zbaslsqelkjoquyamchy.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_mPSihxuJsGhLmCcQxbyaUg_yXBWUtgk';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── State ──────────────────────────────────────────────────────────────────
-let currentUser = null;
-let myProfile = null;
-let allProfiles = [];
-let myProjects = [];
-let mySessions = [];
-let myAchievements = [];
-let allStats = [];
-let currentStage = 'plan';
-let inputMode = 'paste';
-let sessionWordCount = 0;
-let currentMetric = 'flow_words';
-let pendingTimerData = null;
+let currentUser = null, myProfile = null, allProfiles = [];
+let myProjects = [], mySessions = [], myAchievements = [], allStats = [];
+let allAchievementsGlobal = [], myJournalEntries = [];
+let currentStage = 'plan', inputMode = 'paste', sessionWordCount = 0;
+let currentMetric = 'flow_words', pendingTimerData = null;
+let selectedProjectColor = '#8b6914';
+let timerState = 'idle', timerRun = 0, timerPaused = 0, timerPhaseStart = 0, timerTick_ = null;
 
-// Timer state
-let timerState = 'idle';
-let timerRun = 0, timerPaused = 0, timerPhaseStart = 0, timerTick_ = null;
+const PROJECT_COLORS = ['#8b6914','#c0392b','#2980b9','#27ae60','#8e44ad','#e67e22','#16a085','#2c3e50'];
 
-// ── Achievement definitions ────────────────────────────────────────────────
-const ACHIEVEMENT_DEFS = [
-  {key:'first_words',icon:'🖊️',name:'First Words',desc:'Log your very first session',tier:'bronze'},
-  {key:'kindling',icon:'🔥',name:'Kindling',desc:'Maintain a 7-day streak',tier:'bronze'},
-  {key:'chapter_one',icon:'📖',name:'Chapter One',desc:'Flow write 10,000 words total',tier:'bronze'},
-  {key:'refiner',icon:'⚗️',name:'The Refiner',desc:'Complete 10 edit sessions',tier:'bronze'},
-  {key:'in_the_flow',icon:'🌊',name:'In the Flow',desc:'2,000+ words in a single flow session',tier:'silver'},
-  {key:'architect',icon:'📐',name:'Architect',desc:'Log 20 planning sessions',tier:'silver'},
-  {key:'nanowrimo',icon:'🏆',name:'NaNoWriMo',desc:'Flow write 50,000 words in a year',tier:'gold'},
-  {key:'lightning_draft',icon:'⚡',name:'Lightning Draft',desc:'5,000 words in one session',tier:'gold'},
-  {key:'long_haul',icon:'🔭',name:'Long Haul',desc:'30-day writing streak',tier:'gold'},
-  {key:'kill_darlings',icon:'✂️',name:'Kill Your Darlings',desc:'Edit across 20,000 words of sessions',tier:'silver'},
-  {key:'midnight_oil',icon:'🌙',name:'Midnight Oil',desc:'Log a session after midnight',tier:'bronze'},
-  {key:'novelist',icon:'📚',name:'Novelist',desc:'Flow write 80,000 words in a year',tier:'gold'},
-  {key:'world_builder',icon:'🗺️',name:'World Builder',desc:'50 planning sessions logged',tier:'silver'},
-  {key:'word_demon',icon:'💀',name:'Word Demon',desc:'10,000 words in a single day',tier:'gold'},
-  {key:'annual_oath',icon:'📅',name:'Annual Oath',desc:'Write every day for a full year',tier:'gold'},
-  {key:'league_champion',icon:'👑',name:'League Champion',desc:'Lead the leaderboard for 3 months',tier:'gold'},
+// ── Achievement data ───────────────────────────────────────────────────────
+const TIER_STYLES = {
+  unique:   {bg:'#f7f0e0',border:'#c9a96e',color:'#8b6914',   label:'✦ Unique'},
+  wood:     {bg:'#e8d5b0',border:'#a07840',color:'#3d2b0e',   label:'Wood'},
+  bronze:   {bg:'#f0ddd0',border:'#cd7f32',color:'#6b3010',   label:'Bronze'},
+  silver:   {bg:'#e4e8ec',border:'#9da8b0',color:'#3a4550',   label:'Silver'},
+  gold:     {bg:'#f8edb0',border:'#c8a000',color:'#6a5000',   label:'Gold'},
+  platinum: {bg:'#eaeaf8',border:'#8888c8',color:'#404080',   label:'Platinum'},
+  sapphire: {bg:'#d0e0f8',border:'#2060c0',color:'#0a2a6a',   label:'Sapphire'},
+  ruby:     {bg:'#f8d0d4',border:'#c02040',color:'#6a0a20',   label:'Ruby'},
+  emerald:  {bg:'#c8f0d8',border:'#20a050',color:'#0a4020',   label:'Emerald'},
+  diamond:  {bg:'#d8f8ff',border:'#40b8e0',color:'#004060',   label:'Diamond'},
+};
+
+const ACHIEVEMENT_GROUPS = [
+  {id:'words', icon:'📝', name:'Words Written', desc:'Total flow words written this year', metric:'flowWords',
+   tiers:[
+    {key:'words_wood',    threshold:1000,    tier:'wood',     label:'1,000 words'},
+    {key:'chapter_one',   threshold:10000,   tier:'bronze',   label:'10,000 words'},
+    {key:'words_silver',  threshold:25000,   tier:'silver',   label:'25,000 words'},
+    {key:'nanowrimo',     threshold:50000,   tier:'gold',     label:'50,000 words'},
+    {key:'novelist',      threshold:80000,   tier:'platinum', label:'80,000 words'},
+    {key:'words_sapphire',threshold:100000,  tier:'sapphire', label:'100,000 words'},
+    {key:'words_ruby',    threshold:250000,  tier:'ruby',     label:'250,000 words'},
+    {key:'words_emerald', threshold:500000,  tier:'emerald',  label:'500,000 words'},
+    {key:'words_diamond', threshold:1000000, tier:'diamond',  label:'1,000,000 words'},
+  ]},
+  {id:'streak', icon:'🔥', name:'Writing Streak', desc:'Consecutive days with at least one session', metric:'streak',
+   tiers:[
+    {key:'streak_wood',    threshold:3,   tier:'wood',     label:'3 days'},
+    {key:'kindling',       threshold:7,   tier:'bronze',   label:'7 days'},
+    {key:'streak_silver',  threshold:14,  tier:'silver',   label:'14 days'},
+    {key:'long_haul',      threshold:30,  tier:'gold',     label:'30 days'},
+    {key:'streak_platinum',threshold:60,  tier:'platinum', label:'60 days'},
+    {key:'streak_sapphire',threshold:100, tier:'sapphire', label:'100 days'},
+    {key:'streak_ruby',    threshold:200, tier:'ruby',     label:'200 days'},
+    {key:'streak_emerald', threshold:300, tier:'emerald',  label:'300 days'},
+    {key:'annual_oath',    threshold:365, tier:'diamond',  label:'365 days'},
+  ]},
+  {id:'session', icon:'⚡', name:'Single Session', desc:'Most words written in one flow session', metric:'bestSession',
+   tiers:[
+    {key:'in_the_flow',    threshold:2000,  tier:'bronze',  label:'2,000 words'},
+    {key:'lightning_draft',threshold:5000,  tier:'silver',  label:'5,000 words'},
+    {key:'session_gold',   threshold:10000, tier:'gold',    label:'10,000 words'},
+    {key:'session_diamond',threshold:25000, tier:'diamond', label:'25,000 words'},
+  ]},
+  {id:'editing', icon:'✂️', name:'The Editor', desc:'Edit sessions completed this year', metric:'editSessions',
+   tiers:[
+    {key:'refiner',       threshold:10,  tier:'bronze',   label:'10 sessions'},
+    {key:'edit_silver',   threshold:25,  tier:'silver',   label:'25 sessions'},
+    {key:'edit_gold',     threshold:50,  tier:'gold',     label:'50 sessions'},
+    {key:'edit_platinum', threshold:100, tier:'platinum', label:'100 sessions'},
+  ]},
+  {id:'planning', icon:'📋', name:'The Planner', desc:'Planning sessions completed this year', metric:'planSessions',
+   tiers:[
+    {key:'architect',     threshold:20,  tier:'bronze',   label:'20 sessions'},
+    {key:'world_builder', threshold:50,  tier:'silver',   label:'50 sessions'},
+    {key:'plan_gold',     threshold:100, tier:'gold',     label:'100 sessions'},
+    {key:'plan_platinum', threshold:200, tier:'platinum', label:'200 sessions'},
+  ]},
+  {id:'daily', icon:'💀', name:'Daily Output', desc:'Most flow words written in a single day', metric:'bestDay',
+   tiers:[
+    {key:'word_demon',    threshold:10000, tier:'gold',    label:'10,000 words'},
+    {key:'daily_diamond', threshold:25000, tier:'diamond', label:'25,000 words'},
+  ]},
+];
+
+const ACHIEVEMENT_STANDALONES = [
+  {key:'first_words',     icon:'🖊️', name:'First Words',       desc:'Log your very first session',                       tier:'unique'},
+  {key:'midnight_oil',    icon:'🌙', name:'Midnight Oil',       desc:'Log a session after midnight',                      tier:'bronze'},
+  {key:'kill_darlings',   icon:'✂️', name:'Kill Your Darlings', desc:'Accumulate 20,000 words across edit sessions',       tier:'silver'},
+  {key:'league_champion', icon:'👑', name:'League Champion',    desc:'Lead the leaderboard for 3 consecutive months',     tier:'gold'},
 ];
 
 const METRICS = [
-  {key:'flow_words',label:'Flow words'},
-  {key:'total_words',label:'Total words'},
-  {key:'streak',label:'Streak'},
-  {key:'edit_sessions',label:'Edit sessions'},
-  {key:'plan_sessions',label:'Plan sessions'},
-  {key:'active_days',label:'Active days'},
+  {key:'flow_words',    label:'Flow words'},
+  {key:'total_words',   label:'Total words'},
+  {key:'streak',        label:'Streak'},
+  {key:'edit_sessions', label:'Edit sessions'},
+  {key:'plan_sessions', label:'Plan sessions'},
+  {key:'active_days',   label:'Active days'},
 ];
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 async function init() {
   const { data: { session } } = await db.auth.getSession();
-  if (session) {
-    await loadUser(session.user);
-  } else {
-    showAuth();
-  }
+  if (session) await loadUser(session.user); else showAuth();
   db.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN' && session) await loadUser(session.user);
     if (event === 'SIGNED_OUT') showAuth();
   });
 }
-
 function showAuth() {
   document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('auth-wrap').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
 }
-
 async function loadUser(user) {
   currentUser = user;
-  // fetch profile
   const { data: profile } = await db.from('profiles').select('*').eq('id', user.id).single();
   myProfile = profile;
-  // fetch all profiles (for league)
   const { data: profiles } = await db.from('profiles').select('*');
   allProfiles = profiles || [];
   await loadAllData();
@@ -461,7 +740,6 @@ async function loadUser(user) {
   document.getElementById('app').style.display = 'block';
   renderAll();
 }
-
 async function handleLogin() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
@@ -469,25 +747,17 @@ async function handleLogin() {
   const { error } = await db.auth.signInWithPassword({ email, password });
   if (error) document.getElementById('auth-error').textContent = error.message;
 }
-
 async function handleSignup() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   document.getElementById('auth-error').textContent = '';
   if (!name) { document.getElementById('auth-error').textContent = 'Please enter a display name.'; return; }
-  const { error } = await db.auth.signUp({
-    email, password,
-    options: { data: { display_name: name, username: name.toLowerCase() } }
-  });
+  const { error } = await db.auth.signUp({ email, password, options: { data: { display_name: name, username: name.toLowerCase() } } });
   if (error) document.getElementById('auth-error').textContent = error.message;
   else document.getElementById('auth-error').textContent = 'Check your email to confirm your account!';
 }
-
-async function handleSignOut() {
-  await db.auth.signOut();
-}
-
+async function handleSignOut() { await db.auth.signOut(); }
 function switchAuthTab(tab) {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
@@ -499,125 +769,208 @@ function switchAuthTab(tab) {
 // ── Data loading ───────────────────────────────────────────────────────────
 async function loadAllData() {
   const year = new Date().getFullYear();
-  const [projRes, sessRes, achRes, statsRes] = await Promise.all([
+  const [projRes, sessRes, achRes, statsRes, achAllRes, journalRes] = await Promise.all([
     db.from('projects').select('*').eq('user_id', currentUser.id).eq('archived', false).order('created_at'),
-    db.from('sessions').select('*').eq('user_id', currentUser.id)
-      .gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false }),
+    db.from('sessions').select('*').eq('user_id', currentUser.id).gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false }),
     db.from('achievements').select('*').eq('user_id', currentUser.id),
     db.from('yearly_stats').select('*').eq('year', year),
+    db.from('achievements').select('achievement_key, user_id'),
+    db.from('journal_entries').select('*').eq('user_id', currentUser.id).order('entry_date', { ascending: false }),
   ]);
   myProjects = projRes.data || [];
   mySessions = sessRes.data || [];
   myAchievements = achRes.data || [];
   allStats = statsRes.data || [];
+  allAchievementsGlobal = achAllRes.data || [];
+  myJournalEntries = journalRes.data || [];
 }
 
-// ── Render everything ──────────────────────────────────────────────────────
+// ── Render all ─────────────────────────────────────────────────────────────
 function renderAll() {
+  const year = new Date().getFullYear();
   const name = myProfile?.display_name || '?';
   document.getElementById('my-avatar').textContent = name.charAt(0).toUpperCase();
   document.getElementById('week-title').textContent = `This week — ${name}`;
-  document.getElementById('heatmap-title').textContent = `2025 writing heatmap — ${name}`;
+  document.getElementById('heatmap-title').textContent = `${year} writing heatmap — ${name}`;
   document.getElementById('trophy-cabinet-title').textContent = `${name}'s trophy cabinet`;
   document.getElementById('journal-title').textContent = `Writing journal — ${name}`;
-
+  document.getElementById('dash-year').textContent = year;
   renderStats();
+  renderPacing();
   renderWeekBars();
   renderHeatmapFromSessions('heatmap-me', mySessions);
   renderProjects();
+  renderAnalytics();
   renderProjectSelect();
+  renderColorSwatches();
   renderTodaySessions();
   renderLeague();
   renderTrophies();
   renderJournal();
 }
 
+// ── Stats cards ────────────────────────────────────────────────────────────
 function renderStats() {
   const myStats = allStats.find(s => s.user_id === currentUser.id) || {};
-  const flowWords = myStats.flow_words || 0;
-  const editSessions = myStats.edit_sessions || 0;
-  const streak = calcStreak(mySessions);
-
-  document.getElementById('dash-flow').textContent = flowWords.toLocaleString();
-  document.getElementById('dash-streak').textContent = `${streak} 🔥`;
-  document.getElementById('dash-edits').textContent = editSessions;
+  document.getElementById('dash-flow').textContent = (myStats.flow_words || 0).toLocaleString();
+  document.getElementById('dash-streak').textContent = `${calcStreak(mySessions)} 🔥`;
+  document.getElementById('dash-edits').textContent = myStats.edit_sessions || 0;
   document.getElementById('dash-projects').textContent = myProjects.length;
-
-  const flowPct = Math.min(100, Math.round((flowWords / 100000) * 100));
-  const editPct = Math.min(100, Math.round((editSessions / 60) * 100));
-  const streakPct = Math.min(100, Math.round((streak / 30) * 100));
-  document.getElementById('g-flow').style.width = flowPct + '%';
-  document.getElementById('g-flow-pct').textContent = flowPct + '%';
-  document.getElementById('g-edit').style.width = editPct + '%';
-  document.getElementById('g-edit-pct').textContent = editPct + '%';
-  document.getElementById('g-streak').style.width = streakPct + '%';
-  document.getElementById('g-streak-pct').textContent = streakPct + '%';
 }
 
+// ── Pacing ─────────────────────────────────────────────────────────────────
+function renderPacing() {
+  const myStats = allStats.find(s => s.user_id === currentUser.id) || {};
+  const flowWords = myStats.flow_words || 0;
+  const goal = myProfile?.annual_goal || 100000;
+  const now = new Date();
+  const year = now.getFullYear();
+  const startOfYear = new Date(year, 0, 1);
+  const endOfYear = new Date(year + 1, 0, 1);
+  const totalDays = Math.round((endOfYear - startOfYear) / 86400000);
+  const dayOfYear = Math.round((now - startOfYear) / 86400000) + 1;
+  const daysRemaining = totalDays - dayOfYear;
+  const expectedWords = Math.round((dayOfYear / totalDays) * goal);
+  const diff = flowWords - expectedWords;
+  const ahead = diff >= 0;
+  const actualDailyAvg = dayOfYear > 0 ? Math.round(flowWords / dayOfYear) : 0;
+  const requiredDailyAvg = daysRemaining > 0 ? Math.round((goal - flowWords) / daysRemaining) : 0;
+  let estCompletion = '—';
+  if (actualDailyAvg > 0 && flowWords < goal) {
+    const daysLeft = Math.ceil((goal - flowWords) / actualDailyAvg);
+    const est = new Date(now); est.setDate(est.getDate() + daysLeft);
+    estCompletion = est.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+  } else if (flowWords >= goal) { estCompletion = 'Complete! 🎉'; }
+  document.getElementById('pacing-goal-display').textContent = goal.toLocaleString() + ' words';
+  document.getElementById('goal-edit-input').value = goal;
+  const pct = Math.min(100, Math.round((flowWords / goal) * 100));
+  const targetPct = Math.min(100, Math.round((expectedWords / goal) * 100));
+  document.getElementById('pacing-bar-fill').style.width = pct + '%';
+  document.getElementById('pacing-bar-fill').style.background = flowWords >= goal ? 'var(--sepia-dark)' : ahead ? 'var(--flow)' : 'var(--accent)';
+  document.getElementById('pacing-bar-target').style.left = targetPct + '%';
+  document.getElementById('pacing-bar-label').textContent = flowWords.toLocaleString() + ' words written';
+  document.getElementById('pacing-bar-pct').textContent = pct + '%';
+  document.getElementById('pacing-stats').innerHTML = `
+    <div class="pacing-stat"><div class="pacing-stat-val" style="color:${actualDailyAvg >= requiredDailyAvg ? 'var(--flow)' : 'var(--accent)'}">${actualDailyAvg.toLocaleString()}</div><div class="pacing-stat-lbl">Actual avg/day</div></div>
+    <div class="pacing-stat"><div class="pacing-stat-val">${requiredDailyAvg > 0 ? requiredDailyAvg.toLocaleString() : '—'}</div><div class="pacing-stat-lbl">Needed avg/day</div></div>
+    <div class="pacing-stat"><div class="pacing-stat-val" style="font-size:11px;padding-top:2px">${estCompletion}</div><div class="pacing-stat-lbl">Est. completion</div></div>`;
+  const verdictEl = document.getElementById('pacing-verdict');
+  if (flowWords >= goal) { verdictEl.textContent = `Goal reached! You wrote ${flowWords.toLocaleString()} words this year.`; verdictEl.className = 'pacing-verdict ahead'; }
+  else if (ahead) { verdictEl.textContent = `${diff.toLocaleString()} words ahead of schedule.`; verdictEl.className = 'pacing-verdict ahead'; }
+  else if (Math.abs(diff) < 500) { verdictEl.textContent = 'Right on pace — keep going.'; verdictEl.className = 'pacing-verdict on-track'; }
+  else { verdictEl.textContent = `${Math.abs(diff).toLocaleString()} words behind schedule.`; verdictEl.className = 'pacing-verdict behind'; }
+}
+function toggleGoalEdit() {
+  const row = document.getElementById('goal-edit-inline');
+  row.classList.toggle('show');
+  if (row.classList.contains('show')) { document.getElementById('goal-edit-input').focus(); document.getElementById('goal-edit-input').select(); }
+}
+async function saveAnnualGoal() {
+  const val = parseInt(document.getElementById('goal-edit-input').value);
+  if (!val || val < 100) { showToast('Please enter a valid goal (min 100).'); return; }
+  const { error } = await db.from('profiles').update({ annual_goal: val }).eq('id', currentUser.id);
+  if (error) { showToast('Error saving goal.'); return; }
+  myProfile.annual_goal = val; toggleGoalEdit(); renderPacing(); showToast('✓ Annual goal updated');
+}
+
+// ── Streak / week ──────────────────────────────────────────────────────────
 function calcStreak(sessions) {
-  const days = [...new Set(sessions.map(s => s.logged_at.slice(0, 10)))].sort().reverse();
+  const days = [...new Set(sessions.map(s => s.logged_at.slice(0,10)))].sort().reverse();
   if (!days.length) return 0;
-  let streak = 0;
-  let check = new Date(); check.setHours(0,0,0,0);
+  let streak = 0; let check = new Date(); check.setHours(0,0,0,0);
   for (const day of days) {
     const d = new Date(day); d.setHours(0,0,0,0);
-    const diff = Math.round((check - d) / 86400000);
-    if (diff <= 1) { streak++; check = d; }
-    else break;
+    if (Math.round((check - d) / 86400000) <= 1) { streak++; check = d; } else break;
   }
   return streak;
 }
-
 function renderWeekBars() {
-  const container = document.getElementById('week-bars');
-  if (!container) return;
+  const container = document.getElementById('week-bars'); if (!container) return;
   const now = new Date();
   const monday = new Date(now); monday.setDate(now.getDate() - (now.getDay() || 7) + 1); monday.setHours(0,0,0,0);
-  const days = Array.from({length: 7}, (_, i) => { const d = new Date(monday); d.setDate(monday.getDate() + i); return d.toISOString().slice(0,10); });
-  const stageColors = {flow:'var(--flow)',plan:'var(--plan)',edit:'var(--edit)'};
+  const days = Array.from({length:7}, (_, i) => { const d = new Date(monday); d.setDate(monday.getDate() + i); return d.toISOString().slice(0,10); });
+  const sc = {flow:'var(--flow)',plan:'var(--plan)',edit:'var(--edit)'};
   let maxW = 0;
   const dayData = days.map(day => {
-    const daySessions = mySessions.filter(s => s.logged_at.slice(0,10) === day);
-    const dominantStage = daySessions.length ? (daySessions.sort((a,b) => Math.abs(b.word_count)-Math.abs(a.word_count))[0].stage) : 'flow';
-    const total = daySessions.reduce((sum,s) => sum + Math.max(0, s.word_count), 0);
+    const ds = mySessions.filter(s => s.logged_at.slice(0,10) === day);
+    const stage = ds.length ? ds.sort((a,b) => Math.abs(b.word_count)-Math.abs(a.word_count))[0].stage : 'flow';
+    const total = ds.reduce((sum,s) => sum + Math.max(0, s.word_count), 0);
     if (total > maxW) maxW = total;
-    return {total, stage: dominantStage};
+    return {total, stage};
   });
   container.innerHTML = dayData.map(d => {
     const h = maxW > 0 && d.total > 0 ? Math.round((d.total / maxW) * 65) : 4;
-    return `<div class="streak-bar" style="height:${h}px;background:${stageColors[d.stage]};opacity:${d.total > 0 ? 0.8 : 0.2}"></div>`;
+    return `<div class="streak-bar" style="height:${h}px;background:${sc[d.stage]};opacity:${d.total > 0 ? 0.8 : 0.2}"></div>`;
   }).join('');
 }
 
+// ── Heatmap ────────────────────────────────────────────────────────────────
 function renderHeatmapFromSessions(id, sessions) {
-  const grid = document.getElementById(id);
-  if (!grid) return;
+  const grid = document.getElementById(id); if (!grid) return;
   const year = new Date().getFullYear();
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Build day → words map
   const dayMap = {};
   sessions.forEach(s => {
-    const day = s.logged_at.slice(0,10);
+    const day = s.logged_at.slice(0, 10);
     if (!dayMap[day]) dayMap[day] = 0;
     if (s.word_count > 0) dayMap[day] += s.word_count;
   });
+
+  // Jan 1 weekday offset so weeks start on Monday
+  const jan1 = new Date(year, 0, 1);
+  const jan1Dow = jan1.getDay(); // 0=Sun,1=Mon…6=Sat
+  const emptyBefore = jan1Dow === 0 ? 6 : jan1Dow - 1; // Mon=0…Sun=6
+  const isLeap = (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
+  const totalDays = isLeap ? 366 : 365;
+  const totalCols = Math.ceil((emptyBefore + totalDays) / 7);
+
+  // Grid is column-major (each column = one week, rows = Mon–Sun)
+  grid.style.gridTemplateColumns = `repeat(${totalCols}, 1fr)`;
+
   let cells = '';
-  const start = new Date(`${year}-01-01`);
-  for (let i = 0; i < 182; i++) {
-    const d = new Date(start); d.setDate(start.getDate() + i);
-    const key = d.toISOString().slice(0,10);
-    const words = dayMap[key] || 0;
-    let cls = words === 0 ? 'l0' : words < 500 ? 'l1' : words < 1500 ? 'l2' : words < 3000 ? 'l3' : words < 5000 ? 'l4' : 'l5';
-    const today = new Date().toISOString().slice(0,10);
-    if (key > today) cls = 'l0';
-    const label = key > today ? '' : words > 0 ? `${words.toLocaleString()} words` : 'No writing';
-    cells += `<div class="heat-cell ${cls}" data-words="${words}" data-label="${label}" data-date="${key}"></div>`;
+  for (let row = 0; row < 7; row++) {
+    for (let col = 0; col < totalCols; col++) {
+      const dayIndex = col * 7 + row - emptyBefore;
+      if (dayIndex < 0 || dayIndex >= totalDays) {
+        cells += `<div class="heat-empty"></div>`;
+      } else {
+        const d = new Date(year, 0, 1 + dayIndex);
+        const key = d.toISOString().slice(0, 10);
+        const words = dayMap[key] || 0;
+        const cls = key > today ? 'l0'
+          : words === 0  ? 'l0'
+          : words < 500  ? 'l1'
+          : words < 1500 ? 'l2'
+          : words < 3000 ? 'l3'
+          : words < 5000 ? 'l4' : 'l5';
+        const label = key > today ? '' : words > 0 ? `${words.toLocaleString()} words` : 'No writing';
+        cells += `<div class="heat-cell ${cls}" data-label="${label}" data-date="${key}"></div>`;
+      }
+    }
   }
   grid.innerHTML = cells;
+
+  // Position month labels at the exact column each month begins
+  const labelsEl = grid.nextElementSibling;
+  if (labelsEl && labelsEl.classList.contains('month-labels')) {
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    labelsEl.innerHTML = monthNames.map((name, m) => {
+      const firstOfMonth = new Date(year, m, 1);
+      const dayOfYear = Math.round((firstOfMonth - jan1) / 86400000);
+      const col = Math.floor((emptyBefore + dayOfYear) / 7);
+      const pct = (col / totalCols * 100).toFixed(2);
+      return `<span style="position:absolute;left:${pct}%;font-size:8px;color:var(--muted);white-space:nowrap">${name}</span>`;
+    }).join('');
+  }
+
+  // Tooltips
   const tooltip = document.getElementById('heat-tooltip');
-  grid.querySelectorAll('.heat-cell').forEach(cell => {
-    cell.addEventListener('mouseenter', e => {
-      const lbl = cell.dataset.label;
-      if (!lbl) return;
-      tooltip.textContent = `${cell.dataset.date}: ${lbl}`;
+  grid.querySelectorAll('.heat-cell[data-date]').forEach(cell => {
+    cell.addEventListener('mouseenter', () => {
+      if (!cell.dataset.label) return;
+      tooltip.textContent = `${cell.dataset.date}: ${cell.dataset.label}`;
       tooltip.style.opacity = '1';
     });
     cell.addEventListener('mousemove', e => {
@@ -628,207 +981,502 @@ function renderHeatmapFromSessions(id, sessions) {
   });
 }
 
+// ── Projects ───────────────────────────────────────────────────────────────
 function renderProjects() {
   const el = document.getElementById('project-list');
-  if (!myProjects.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No projects yet. Add one below!</div>'; return; }
+  if (!myProjects.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No projects yet — create one below.</div>'; return; }
   el.innerHTML = myProjects.map(p => {
-    const flow = mySessions.filter(s => s.project_id === p.id && s.stage === 'flow' && s.word_count > 0).reduce((sum,s) => sum + s.word_count, 0);
+    const flow = mySessions.filter(s => s.project_id === p.id && s.stage === 'flow' && s.word_count > 0).reduce((sum,s) => sum+s.word_count, 0);
     const sessions = mySessions.filter(s => s.project_id === p.id).length;
     const pct = Math.min(100, Math.round((flow / (p.word_goal || 80000)) * 100));
-    return `<div style="margin-bottom:12px">
+    return `<div class="project-card-clickable" onclick="openProjectDetail('${p.id}')" style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
         <span style="font-size:13px;font-family:'Playfair Display',serif">${p.name}</span>
         <span style="font-size:10px;color:var(--muted)">${flow.toLocaleString()} / ${(p.word_goal||80000).toLocaleString()} · ${sessions} sessions</span>
       </div>
       <div class="goal-prog-bg"><div class="goal-prog-fill" style="width:${pct}%;background:${p.color||'var(--sepia-dark)'}"></div></div>
-      <div style="font-size:9px;color:var(--muted);margin-top:3px">${pct}% of draft goal</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:3px">${pct}% of draft goal · click for detail</div>
     </div>`;
   }).join('');
 }
 
-function renderProjectSelect() {
-  const sel = document.getElementById('write-project');
-  sel.innerHTML = '<option value="">— no project —</option>' +
-    myProjects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+// ── Analytics ──────────────────────────────────────────────────────────────
+function renderAnalytics() {
+  const year = new Date().getFullYear();
+  const el = document.getElementById('analytics-content');
+  const yl = document.getElementById('analytics-year-label');
+  if (!el) return;
+  if (yl) yl.textContent = year;
+  if (!mySessions.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No sessions logged yet this year.</div>'; return; }
+
+  function fmtHours(secs) {
+    if (!secs) return null;
+    const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  }
+
+  const stages = [
+    {key:'plan', icon:'📋', label:'Plan',      color:'var(--plan)'},
+    {key:'flow', icon:'✍️', label:'Flow write', color:'var(--flow)'},
+    {key:'edit', icon:'✂️', label:'Edit',       color:'var(--edit)'},
+  ];
+
+  const data = {};
+  for (const {key} of stages) {
+    const ss = mySessions.filter(s => s.stage === key);
+    const totalWords = ss.reduce((sum,s) => sum + s.word_count, 0);
+    const totalTime  = ss.reduce((sum,s) => sum + (s.timer_run_seconds || 0), 0);
+    data[key] = { sessions: ss.length, totalWords, avgWords: ss.length ? Math.round(totalWords / ss.length) : 0, totalTime };
+  }
+
+  const total = mySessions.length;
+  const planPct = Math.round((data.plan.sessions / total) * 100);
+  const flowPct = Math.round((data.flow.sessions / total) * 100);
+  const editPct = 100 - planPct - flowPct;
+
+  el.innerHTML = `
+    <div class="analytics-prop-bar">
+      ${planPct > 0 ? `<div style="width:${planPct}%;background:var(--plan)" title="Plan ${planPct}%"></div>` : ''}
+      ${flowPct > 0 ? `<div style="width:${flowPct}%;background:var(--flow)" title="Flow ${flowPct}%"></div>` : ''}
+      ${editPct > 0 ? `<div style="width:${editPct}%;background:var(--edit)" title="Edit ${editPct}%"></div>` : ''}
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <span style="font-size:9px;color:var(--plan)">■ Plan ${planPct}%</span>
+      <span style="font-size:9px;color:var(--flow)">■ Flow ${flowPct}%</span>
+      <span style="font-size:9px;color:var(--edit)">■ Edit ${editPct}%</span>
+    </div>
+    <div class="analytics-stage-row">
+      ${stages.map(({key, icon, label, color}) => {
+        const d = data[key];
+        const pct = total ? Math.round((d.sessions / total) * 100) : 0;
+        const wordStr = key === 'edit'
+          ? (d.totalWords >= 0 ? '+' : '') + d.totalWords.toLocaleString()
+          : d.totalWords.toLocaleString();
+        const avgStr = key === 'edit'
+          ? (d.avgWords >= 0 ? '+' : '') + d.avgWords.toLocaleString()
+          : d.avgWords.toLocaleString();
+        const timeStr = fmtHours(d.totalTime);
+        return `<div class="analytics-stage-card" style="border-top-color:${color}">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:${color};margin-bottom:7px">${icon} ${label}</div>
+          <div class="analytics-stage-val">${d.sessions}</div>
+          <div class="analytics-stage-lbl" style="margin-bottom:8px">sessions · ${pct}%</div>
+          <div class="analytics-stage-val" style="font-size:14px">${wordStr}</div>
+          <div class="analytics-stage-lbl" style="margin-bottom:6px">${key === 'edit' ? 'net word change' : 'total words'}</div>
+          <div class="analytics-stage-val" style="font-size:14px">${avgStr}</div>
+          <div class="analytics-stage-lbl">${key === 'edit' ? 'avg change/session' : 'avg words/session'}</div>
+          ${timeStr ? `<div class="analytics-stage-val" style="font-size:14px;margin-top:6px">${timeStr}</div><div class="analytics-stage-lbl">timer time</div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>`;
 }
 
+// ── Project detail ─────────────────────────────────────────────────────────
+function openProjectDetail(projectId) {
+  const project = myProjects.find(p => p.id === projectId);
+  if (!project) return;
+  renderProjectDetail(project);
+  document.getElementById('project-detail-overlay').classList.add('show');
+}
+function closeProjectDetail() {
+  document.getElementById('project-detail-overlay').classList.remove('show');
+}
+function renderProjectDetail(project) {
+  const projectSessions = mySessions.filter(s => s.project_id === project.id)
+    .sort((a,b) => new Date(b.logged_at) - new Date(a.logged_at));
+  const flowSessions = projectSessions.filter(s => s.stage === 'flow' && s.word_count > 0);
+  const flowWords    = flowSessions.reduce((sum,s) => sum + s.word_count, 0);
+  const goal         = project.word_goal || 80000;
+  const remaining    = Math.max(0, goal - flowWords);
+  const pct          = Math.min(100, Math.round((flowWords / goal) * 100));
+  const color        = project.color || 'var(--sepia-dark)';
+
+  // Date range & averages
+  const allDates = projectSessions.map(s => s.logged_at.slice(0,10)).sort();
+  const firstDate = allDates[0] ? new Date(allDates[0]) : null;
+  const today = new Date();
+  const daysSpanned = firstDate ? Math.max(1, Math.round((today - firstDate) / 86400000) + 1) : 1;
+  const activeDays  = new Set(projectSessions.map(s => s.logged_at.slice(0,10))).size;
+  const avgPerDay   = daysSpanned > 0 && flowWords > 0 ? Math.round(flowWords / daysSpanned) : 0;
+  const avgPerSess  = flowSessions.length > 0 ? Math.round(flowWords / flowSessions.length) : 0;
+  const bestSession = flowSessions.length ? Math.max(...flowSessions.map(s => s.word_count)) : 0;
+
+  // Est completion
+  let estCompletion = remaining === 0 ? 'Complete 🎉' : '—';
+  if (avgPerDay > 0 && remaining > 0) {
+    const est = new Date(today);
+    est.setDate(est.getDate() + Math.ceil(remaining / avgPerDay));
+    estCompletion = est.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+  }
+
+  // Monthly chart
+  const year = today.getFullYear();
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthlyWords = monthNames.map((name, m) => ({
+    name,
+    words: flowSessions.filter(s => { const d = new Date(s.logged_at); return d.getFullYear() === year && d.getMonth() === m; })
+      .reduce((sum,s) => sum + s.word_count, 0)
+  }));
+  const maxMonthWords = Math.max(...monthlyWords.map(m => m.words), 1);
+
+  // Stage counts for this project
+  const stageCounts = {
+    plan: projectSessions.filter(s => s.stage === 'plan').length,
+    flow: flowSessions.length,
+    edit: projectSessions.filter(s => s.stage === 'edit').length,
+  };
+
+  const sc = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
+  const sn = {plan:'Plan',flow:'Flow',edit:'Edit'};
+  const dc = {plan:'dot-plan',flow:'dot-flow',edit:'dot-edit'};
+
+  document.getElementById('project-detail-content').innerHTML = `
+    <div style="margin-bottom:16px">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-style:italic;margin-bottom:6px">${project.name}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">${flowWords.toLocaleString()} / ${goal.toLocaleString()} words &nbsp;·&nbsp; ${pct}% complete &nbsp;·&nbsp; ${activeDays} active days</div>
+      <div class="goal-prog-bg" style="height:10px"><div class="goal-prog-fill" style="width:${pct}%;background:${color}"></div></div>
+    </div>
+
+    <div class="section-title">Velocity</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+      <div class="pacing-stat"><div class="pacing-stat-val">${avgPerDay > 0 ? avgPerDay.toLocaleString() : '—'}</div><div class="pacing-stat-lbl">Avg words/day</div></div>
+      <div class="pacing-stat"><div class="pacing-stat-val">${avgPerSess > 0 ? avgPerSess.toLocaleString() : '—'}</div><div class="pacing-stat-lbl">Avg words/session</div></div>
+      <div class="pacing-stat"><div class="pacing-stat-val" style="font-size:11px;padding-top:2px">${estCompletion}</div><div class="pacing-stat-lbl">Est. completion</div></div>
+      <div class="pacing-stat"><div class="pacing-stat-val">${remaining.toLocaleString()}</div><div class="pacing-stat-lbl">Words remaining</div></div>
+      <div class="pacing-stat"><div class="pacing-stat-val">${projectSessions.length}</div><div class="pacing-stat-lbl">Total sessions</div></div>
+      <div class="pacing-stat"><div class="pacing-stat-val">${bestSession > 0 ? bestSession.toLocaleString() : '—'}</div><div class="pacing-stat-lbl">Best session</div></div>
+    </div>
+
+    <div class="section-title">${year} monthly progress</div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="proj-month-chart">
+        ${monthlyWords.map(m => `
+          <div class="proj-month-bar">
+            ${m.words > 0
+              ? `<div class="proj-month-fill" style="height:${Math.max(3, Math.round((m.words/maxMonthWords)*74))}px;background:${color};opacity:0.85" title="${m.name}: ${m.words.toLocaleString()} words"></div>`
+              : `<div class="proj-month-empty"></div>`}
+          </div>`).join('')}
+      </div>
+      <div class="proj-month-labels">
+        ${monthlyWords.map(m => `<div class="proj-month-lbl">${m.name}</div>`).join('')}
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        ${monthlyWords.filter(m=>m.words>0).slice(0,3).map(m=>`<span style="font-size:9px;color:var(--muted)">${m.name}: ${m.words.toLocaleString()}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="section-title">Session breakdown &nbsp;<span style="font-size:9px;font-style:normal;color:var(--plan)">■ ${stageCounts.plan} plan</span> <span style="font-size:9px;color:var(--flow)">■ ${stageCounts.flow} flow</span> <span style="font-size:9px;color:var(--edit)">■ ${stageCounts.edit} edit</span></div>
+    <div>
+      ${projectSessions.length === 0
+        ? '<div style="font-size:11px;color:var(--muted)">No sessions logged for this project yet.</div>'
+        : projectSessions.slice(0, 30).map(s => {
+            const wStr = s.stage === 'edit' ? (s.word_count >= 0 ? '+' : '') + s.word_count.toLocaleString() : s.word_count.toLocaleString();
+            const date = new Date(s.logged_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+            const time = new Date(s.logged_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+            const timerStr = s.timer_run_seconds ? ` · ⏱ ${Math.floor(s.timer_run_seconds/60)}m` : '';
+            return `<div class="log-entry">
+              <div class="entry-dot ${dc[s.stage]}"></div>
+              <div class="entry-words">${wStr}</div>
+              <div style="flex:1">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:${sc[s.stage]}">${sn[s.stage]}${timerStr}</div>
+                ${s.note ? `<div class="entry-note">"${s.note}"</div>` : ''}
+              </div>
+              <div class="entry-time">${date} ${time}</div>
+            </div>`;
+          }).join('')}
+      ${projectSessions.length > 30 ? `<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px">Showing 30 of ${projectSessions.length} sessions</div>` : ''}
+    </div>`;
+}
+
+function renderProjectSelect() {
+  const sel = document.getElementById('write-project');
+  sel.innerHTML = '<option value="">— no project —</option>' + myProjects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+}
+function renderColorSwatches() {
+  const c = document.getElementById('color-swatches'); if (!c) return;
+  c.innerHTML = PROJECT_COLORS.map(col => `<div class="color-swatch${col===selectedProjectColor?' selected':''}" style="background:${col}" onclick="selectColor('${col}')"></div>`).join('');
+}
+function selectColor(c) { selectedProjectColor = c; renderColorSwatches(); }
+function toggleNewProjectForm() {
+  const f = document.getElementById('new-project-form'); f.classList.toggle('show');
+  if (f.classList.contains('show')) { document.getElementById('np-name').focus(); selectedProjectColor = PROJECT_COLORS[0]; renderColorSwatches(); }
+}
+async function createProject() {
+  const name = document.getElementById('np-name').value.trim();
+  const goal = parseInt(document.getElementById('np-goal').value) || 80000;
+  if (!name) { showToast('Please enter a project name.'); return; }
+  const { data, error } = await db.from('projects').insert({ user_id: currentUser.id, name, word_goal: goal, color: selectedProjectColor }).select().single();
+  if (error) { showToast('Error creating project.'); return; }
+  myProjects.push(data);
+  document.getElementById('np-name').value = '';
+  document.getElementById('np-goal').value = '80000';
+  toggleNewProjectForm();
+  renderProjects(); renderProjectSelect();
+  document.getElementById('dash-projects').textContent = myProjects.length;
+  showToast(`✓ Project "${name}" created`);
+}
+
+// ── Today's sessions ───────────────────────────────────────────────────────
 function renderTodaySessions() {
   const today = new Date().toISOString().slice(0,10);
   const todayS = mySessions.filter(s => s.logged_at.slice(0,10) === today);
   const el = document.getElementById('log-entries');
   if (!todayS.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No sessions logged today yet.</div>'; return; }
-  const stageColors = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
-  const stageNames = {plan:'Plan',flow:'Flow write',edit:'Edit'};
-  const dotClass = {plan:'dot-plan',flow:'dot-flow',edit:'dot-edit'};
-  el.innerHTML = todayS.slice(0, 10).map(s => {
+  const sc = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
+  const sn = {plan:'Plan',flow:'Flow write',edit:'Edit'};
+  const dc = {plan:'dot-plan',flow:'dot-flow',edit:'dot-edit'};
+  el.innerHTML = todayS.slice(0,10).map(s => {
     const proj = myProjects.find(p => p.id === s.project_id);
     const wStr = s.stage === 'edit' ? (s.word_count >= 0 ? '+' : '') + s.word_count.toLocaleString() : s.word_count.toLocaleString();
-    const time = new Date(s.logged_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-    return `<div class="log-entry">
-      <div class="entry-dot ${dotClass[s.stage]}"></div>
-      <div class="entry-words">${wStr}</div>
-      <div style="flex:1">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:${stageColors[s.stage]}">${stageNames[s.stage]}</div>
-        ${proj ? `<div style="font-size:10px;color:var(--muted)">${proj.name}</div>` : ''}
-        ${s.note ? `<div class="entry-note">"${s.note}"</div>` : ''}
-      </div>
-      <div class="entry-time">${time}</div>
-    </div>`;
+    const time = new Date(s.logged_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    return `<div class="log-entry"><div class="entry-dot ${dc[s.stage]}"></div><div class="entry-words">${wStr}</div><div style="flex:1"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:${sc[s.stage]}">${sn[s.stage]}</div>${proj?`<div style="font-size:10px;color:var(--muted)">${proj.name}</div>`:''} ${s.note?`<div class="entry-note">"${s.note}"</div>`:''}</div><div class="entry-time">${time}</div></div>`;
   }).join('');
 }
 
 // ── League ─────────────────────────────────────────────────────────────────
-function renderLeague() {
-  renderMetricPills();
-  renderLeaderboard();
-}
-
+function renderLeague() { renderMetricPills(); renderLeaderboard(); }
 function renderMetricPills() {
   document.getElementById('metric-pills').innerHTML = METRICS.map(m =>
-    `<div class="metric-pill${m.key === currentMetric ? ' active' : ''}" onclick="setMetric('${m.key}')">${m.label}</div>`
-  ).join('');
+    `<div class="metric-pill${m.key===currentMetric?' active':''}" onclick="setMetric('${m.key}')">${m.label}</div>`).join('');
 }
-
 function setMetric(k) { currentMetric = k; renderMetricPills(); renderLeaderboard(); }
-
 function renderLeaderboard() {
-  const metricMap = {
-    flow_words: s => s.flow_words || 0,
-    total_words: s => (s.flow_words||0) + (s.plan_words||0),
-    streak: s => calcStreakForUser(s.user_id),
-    edit_sessions: s => s.edit_sessions || 0,
-    plan_sessions: s => s.plan_sessions || 0,
-    active_days: s => s.active_days || 0,
-  };
-  const metricLabel = {flow_words:'flow words',total_words:'total words',streak:'days',edit_sessions:'sessions',plan_sessions:'sessions',active_days:'days'};
-  const fn = metricMap[currentMetric] || (s => s.flow_words || 0);
-
-  // merge profiles with stats
-  const rows = allProfiles.map(p => {
-    const stats = allStats.find(s => s.user_id === p.id) || {};
-    return { ...p, ...stats, value: fn({...stats, user_id: p.id}), isMe: p.id === currentUser.id };
-  }).sort((a,b) => b.value - a.value);
-
+  const mmap = { flow_words:s=>s.flow_words||0, total_words:s=>(s.flow_words||0)+(s.plan_words||0), streak:s=>calcStreakForUser(s.user_id), edit_sessions:s=>s.edit_sessions||0, plan_sessions:s=>s.plan_sessions||0, active_days:s=>s.active_days||0 };
+  const mlabel = { flow_words:'flow words', total_words:'total words', streak:'days', edit_sessions:'sessions', plan_sessions:'sessions', active_days:'days' };
+  const fn = mmap[currentMetric] || (s => s.flow_words || 0);
+  const rows = allProfiles.map(p => { const stats = allStats.find(s => s.user_id === p.id) || {}; return {...p,...stats,value:fn({...stats,user_id:p.id}),isMe:p.id===currentUser.id}; }).sort((a,b) => b.value - a.value);
   const max = rows[0]?.value || 1;
-  const rankSymbols = ['①','②','③','④','⑤'];
-  const rankClass = ['gold','silver','','',''];
-
-  document.getElementById('lb-table').innerHTML = `
-    <div style="border:1px solid var(--border);border-radius:4px;overflow:hidden">
-      ${rows.map((w, i) => `
-        <div class="lb-row${w.isMe ? ' you' : ''}" onclick="openH2H('${w.id}')">
-          <div class="lb-rank-num ${rankClass[i]||''}">${rankSymbols[i]||i+1}</div>
-          <div class="lb-name-cell">${w.display_name}${w.isMe ? ' <span style="font-size:9px;color:var(--muted)">(you)</span>' : ''}</div>
-          <div class="lb-bar-wrap">
-            <div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${max>0?Math.round((w.value/max)*100):0}%;background:${w.isMe?'var(--sepia-dark)':'#2c5f8a'}"></div></div>
-            <div class="lb-val">${w.value.toLocaleString()} ${metricLabel[currentMetric]}</div>
-          </div>
-        </div>`).join('')}
-    </div>`;
+  const rs = ['①','②','③','④','⑤']; const rc = ['gold','silver','','',''];
+  document.getElementById('lb-table').innerHTML = `<div style="border:1px solid var(--border);border-radius:4px;overflow:hidden">${rows.map((w,i) => `<div class="lb-row${w.isMe?' you':''}" onclick="openH2H('${w.id}')"><div class="lb-rank-num ${rc[i]||''}">${rs[i]||i+1}</div><div class="lb-name-cell">${w.display_name}${w.isMe?' <span style="font-size:9px;color:var(--muted)">(you)</span>':''}</div><div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${max>0?Math.round((w.value/max)*100):0}%;background:${w.isMe?'var(--sepia-dark)':'#2c5f8a'}"></div></div><div class="lb-val">${w.value.toLocaleString()} ${mlabel[currentMetric]}</div></div></div>`).join('')}</div>`;
 }
-
-function calcStreakForUser(uid) {
-  if (uid === currentUser.id) return calcStreak(mySessions);
-  return 0; // only have full session data for current user; others show from yearly_stats
-}
-
+function calcStreakForUser(uid) { return uid === currentUser.id ? calcStreak(mySessions) : 0; }
 async function openH2H(otherId) {
   if (otherId === currentUser.id) return;
-  const other = allProfiles.find(p => p.id === otherId);
-  if (!other) return;
+  const other = allProfiles.find(p => p.id === otherId); if (!other) return;
   const year = new Date().getFullYear();
-  const { data: otherSessions } = await db.from('sessions').select('*').eq('user_id', otherId)
-    .gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false });
+  const { data: otherSessions } = await db.from('sessions').select('*').eq('user_id', otherId).gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false });
   const myStats = allStats.find(s => s.user_id === currentUser.id) || {};
   const otherStats = allStats.find(s => s.user_id === otherId) || {};
-  const myFlow = myStats.flow_words || 0;
-  const otherFlow = otherStats.flow_words || 0;
-  const diff = myFlow - otherFlow;
-  const diffStr = (diff >= 0 ? '+' : '') + diff.toLocaleString();
-  const leader = diff >= 0 ? myProfile.display_name : other.display_name;
-
+  const myFlow = myStats.flow_words || 0; const otherFlow = otherStats.flow_words || 0;
+  const diff = myFlow - otherFlow; const leader = diff >= 0 ? myProfile.display_name : other.display_name;
   document.getElementById('h2h-map1-title').textContent = `${myProfile.display_name}'s heatmap`;
   document.getElementById('h2h-map2-title').textContent = `${other.display_name}'s heatmap`;
   document.getElementById('h2h-compare').innerHTML = `
-    <div class="compare-person">
-      <div class="compare-name">${myProfile.display_name}</div>
-      <div class="compare-words" style="color:var(--sepia-dark)">${myFlow.toLocaleString()}</div>
-      <div style="font-size:9px;color:var(--muted)">flow words this year</div>
-      <div style="margin-top:8px">
-        <div class="cstage"><span>📋 Plan</span><span>${(myStats.plan_words||0).toLocaleString()}</span></div>
-        <div class="cstage"><span>✍️ Flow</span><span>${myFlow.toLocaleString()}</span></div>
-        <div class="cstage"><span>✂️ Edit sessions</span><span>${myStats.edit_sessions||0}</span></div>
-      </div>
-    </div>
-    <div style="text-align:center">
-      <div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic">vs</div>
-      <div style="font-size:9px;margin-top:6px;color:var(--muted)">${leader} leads by</div>
-      <div style="font-size:16px;color:var(--accent);margin-top:2px">${Math.abs(diff).toLocaleString()}</div>
-    </div>
-    <div class="compare-person">
-      <div class="compare-name">${other.display_name}</div>
-      <div class="compare-words" style="color:#2c5f8a">${otherFlow.toLocaleString()}</div>
-      <div style="font-size:9px;color:var(--muted)">flow words this year</div>
-      <div style="margin-top:8px">
-        <div class="cstage"><span>📋 Plan</span><span>${(otherStats.plan_words||0).toLocaleString()}</span></div>
-        <div class="cstage"><span>✍️ Flow</span><span>${otherFlow.toLocaleString()}</span></div>
-        <div class="cstage"><span>✂️ Edit sessions</span><span>${otherStats.edit_sessions||0}</span></div>
-      </div>
-    </div>`;
+    <div class="compare-person"><div class="compare-name">${myProfile.display_name}</div><div class="compare-words" style="color:var(--sepia-dark)">${myFlow.toLocaleString()}</div><div style="font-size:9px;color:var(--muted)">flow words this year</div><div style="margin-top:8px"><div class="cstage"><span>📋 Plan</span><span>${(myStats.plan_words||0).toLocaleString()}</span></div><div class="cstage"><span>✍️ Flow</span><span>${myFlow.toLocaleString()}</span></div><div class="cstage"><span>✂️ Edit sessions</span><span>${myStats.edit_sessions||0}</span></div></div></div>
+    <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic">vs</div><div style="font-size:9px;margin-top:6px;color:var(--muted)">${leader} leads by</div><div style="font-size:16px;color:var(--accent);margin-top:2px">${Math.abs(diff).toLocaleString()}</div></div>
+    <div class="compare-person"><div class="compare-name">${other.display_name}</div><div class="compare-words" style="color:#2c5f8a">${otherFlow.toLocaleString()}</div><div style="font-size:9px;color:var(--muted)">flow words this year</div><div style="margin-top:8px"><div class="cstage"><span>📋 Plan</span><span>${(otherStats.plan_words||0).toLocaleString()}</span></div><div class="cstage"><span>✍️ Flow</span><span>${otherFlow.toLocaleString()}</span></div><div class="cstage"><span>✂️ Edit sessions</span><span>${otherStats.edit_sessions||0}</span></div></div></div>`;
   renderHeatmapFromSessions('heatmap-h2h-me', mySessions);
   renderHeatmapFromSessions('heatmap-h2h-them', otherSessions || []);
   document.getElementById('league-main').style.display = 'none';
   document.getElementById('league-h2h').style.display = 'block';
 }
+function showLeagueMain() { document.getElementById('league-main').style.display = 'block'; document.getElementById('league-h2h').style.display = 'none'; }
 
-function showLeagueMain() {
-  document.getElementById('league-main').style.display = 'block';
-  document.getElementById('league-h2h').style.display = 'none';
+// ── Achievement helpers ────────────────────────────────────────────────────
+function getMetricValue(metric) {
+  const myStats = allStats.find(s => s.user_id === currentUser.id) || {};
+  if (metric === 'flowWords') return myStats.flow_words || 0;
+  if (metric === 'streak') return calcStreak(mySessions);
+  if (metric === 'editSessions') return myStats.edit_sessions || 0;
+  if (metric === 'planSessions') return myStats.plan_sessions || 0;
+  if (metric === 'bestSession') { const v = mySessions.filter(s=>s.stage==='flow'&&s.word_count>0).map(s=>s.word_count); return v.length ? Math.max(...v) : 0; }
+  if (metric === 'bestDay') {
+    const dm = {}; mySessions.filter(s=>s.stage==='flow'&&s.word_count>0).forEach(s=>{const d=s.logged_at.slice(0,10); dm[d]=(dm[d]||0)+s.word_count;});
+    const v = Object.values(dm); return v.length ? Math.max(...v) : 0;
+  }
+  return 0;
+}
+function getUnlockPct(key) {
+  if (!allProfiles.length) return 0;
+  const uids = new Set(allAchievementsGlobal.filter(a => a.achievement_key === key).map(a => a.user_id));
+  return Math.round((uids.size / allProfiles.length) * 100);
+}
+function getAchievementDef(key) {
+  const s = ACHIEVEMENT_STANDALONES.find(a => a.key === key);
+  if (s) return s;
+  for (const g of ACHIEVEMENT_GROUPS) {
+    const t = g.tiers.find(t => t.key === key);
+    if (t) return { key, icon: g.icon, name: `${g.name}: ${TIER_STYLES[t.tier].label}`, desc: `${t.label} — ${g.desc}`, tier: t.tier };
+  }
+  return null;
 }
 
 // ── Trophies ───────────────────────────────────────────────────────────────
 function renderTrophies() {
   const unlockedKeys = new Set(myAchievements.map(a => a.achievement_key));
-  const unlocked = ACHIEVEMENT_DEFS.filter(a => unlockedKeys.has(a.key)).length;
-  document.getElementById('trophy-count').textContent = `${unlocked} / ${ACHIEVEMENT_DEFS.length} unlocked`;
-  document.getElementById('trophies-grid').innerHTML = ACHIEVEMENT_DEFS.map(a => {
+  const allKeys = [...ACHIEVEMENT_GROUPS.flatMap(g => g.tiers.map(t => t.key)), ...ACHIEVEMENT_STANDALONES.map(a => a.key)];
+  const totalUnlocked = allKeys.filter(k => unlockedKeys.has(k)).length;
+  document.getElementById('trophy-count').textContent = `${totalUnlocked} / ${allKeys.length} unlocked`;
+
+  let html = '<div class="trophy-section-label">Milestone Achievements</div>';
+  for (const group of ACHIEVEMENT_GROUPS) {
+    const val = getMetricValue(group.metric);
+    const highestUnlocked = [...group.tiers].reverse().find(t => unlockedKeys.has(t.key));
+    const nextTier = group.tiers.find(t => !unlockedKeys.has(t.key));
+    const currentTierStyle = highestUnlocked ? TIER_STYLES[highestUnlocked.tier] : null;
+
+    const dots = group.tiers.map(t => {
+      const ts = TIER_STYLES[t.tier];
+      const isCurrent = highestUnlocked && t.key === highestUnlocked.key;
+      const isUnlocked = unlockedKeys.has(t.key);
+      const cls = isCurrent ? 'is-current is-unlocked' : isUnlocked ? 'is-unlocked' : 'is-locked';
+      const initial = ts.label.replace('✦ ','').charAt(0);
+      return `<div class="tier-dot ${cls}" style="background:${ts.bg};border-color:${ts.border};color:${ts.color}" title="${ts.label}: ${t.label}">${initial}</div>`;
+    }).join('');
+
+    const progressText = nextTier
+      ? `${val.toLocaleString()} / ${nextTier.threshold.toLocaleString()} toward ${TIER_STYLES[nextTier.tier].label}`
+      : `All tiers unlocked — ${val.toLocaleString()} ${group.metric === 'streak' ? 'day streak' : ''}`;
+    const pctText = highestUnlocked ? `${getUnlockPct(highestUnlocked.key)}% of writers have reached ${TIER_STYLES[highestUnlocked.tier].label}` : '';
+
+    html += `<div class="trophy-group-card" onclick="openGroupDetail('${group.id}')">
+      <div class="trophy-group-header">
+        <span class="trophy-group-icon">${group.icon}</span>
+        <div><div class="trophy-group-name">${group.name}</div><div class="trophy-group-desc">${group.desc}</div></div>
+        ${currentTierStyle ? `<span class="trophy-badge badge-${highestUnlocked.tier} trophy-group-badge">${currentTierStyle.label}</span>` : '<span class="trophy-badge badge-locked trophy-group-badge">Locked</span>'}
+      </div>
+      <div class="tier-dots">${dots}</div>
+      <div class="tier-progress-text">${progressText}</div>
+      ${pctText ? `<div class="tier-pct-text">${pctText}</div>` : ''}
+    </div>`;
+  }
+
+  html += '<div class="trophy-section-label" style="margin-top:18px">Special Awards</div>';
+  html += '<div class="achievements-grid">';
+  for (const a of ACHIEVEMENT_STANDALONES) {
     const isUnlocked = unlockedKeys.has(a.key);
-    return `<div class="trophy-card ${isUnlocked ? 'unlocked' : 'locked'}">
+    const pct = getUnlockPct(a.key);
+    html += `<div class="trophy-card ${isUnlocked ? 'unlocked' : 'locked'}" onclick="openStandaloneDetail('${a.key}')">
       <span class="trophy-icon">${a.icon}</span>
       <div class="trophy-name">${a.name}</div>
       <div class="trophy-desc">${a.desc}</div>
-      <span class="trophy-badge badge-${isUnlocked ? a.tier : 'locked'}">${isUnlocked ? a.tier : 'locked'}</span>
+      <span class="trophy-badge badge-${isUnlocked ? a.tier : 'locked'}">${isUnlocked ? TIER_STYLES[a.tier].label : 'Locked'}</span>
+      <div class="trophy-pct">${isUnlocked ? `${pct}% of writers` : ''}</div>
+    </div>`;
+  }
+  html += '</div>';
+  document.getElementById('trophies-container').innerHTML = html;
+}
+
+function openGroupDetail(groupId) {
+  const group = ACHIEVEMENT_GROUPS.find(g => g.id === groupId); if (!group) return;
+  const unlockedKeys = new Set(myAchievements.map(a => a.achievement_key));
+  document.getElementById('ach-detail-icon').textContent = group.icon;
+  document.getElementById('ach-detail-name').textContent = group.name;
+  document.getElementById('ach-detail-desc').textContent = group.desc;
+  document.getElementById('ach-detail-tiers').innerHTML = group.tiers.map(t => {
+    const ts = TIER_STYLES[t.tier];
+    const isUnlocked = unlockedKeys.has(t.key);
+    const achRecord = myAchievements.find(a => a.achievement_key === t.key);
+    const dateStr = achRecord ? new Date(achRecord.unlocked_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : null;
+    const pct = getUnlockPct(t.key);
+    return `<div class="ach-tier-row">
+      <div class="ach-tier-badge-lg badge-${t.tier}" style="background:${ts.bg};border-color:${ts.border};color:${ts.color}">${ts.label}</div>
+      <div class="ach-tier-req">${t.label}</div>
+      <div style="text-align:right">
+        <div class="ach-tier-date" style="${isUnlocked ? 'color:var(--flow)' : ''}">${isUnlocked ? `✓ ${dateStr}` : 'Locked'}</div>
+        <div class="ach-tier-pct">${pct}% of writers</div>
+      </div>
     </div>`;
   }).join('');
+  document.getElementById('ach-detail-overlay').classList.add('show');
 }
+
+function openStandaloneDetail(key) {
+  const a = ACHIEVEMENT_STANDALONES.find(x => x.key === key); if (!a) return;
+  const ts = TIER_STYLES[a.tier];
+  const achRecord = myAchievements.find(x => x.achievement_key === key);
+  const isUnlocked = !!achRecord;
+  const dateStr = achRecord ? new Date(achRecord.unlocked_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : null;
+  const pct = getUnlockPct(key);
+  document.getElementById('ach-detail-icon').textContent = a.icon;
+  document.getElementById('ach-detail-name').textContent = a.name;
+  document.getElementById('ach-detail-desc').textContent = a.desc;
+  document.getElementById('ach-detail-tiers').innerHTML = `<div class="ach-tier-row">
+    <div class="ach-tier-badge-lg badge-${a.tier}" style="background:${ts.bg};border-color:${ts.border};color:${ts.color}">${ts.label}</div>
+    <div class="ach-tier-req">${a.desc}</div>
+    <div style="text-align:right">
+      <div class="ach-tier-date" style="${isUnlocked ? 'color:var(--flow)' : ''}">${isUnlocked ? `✓ ${dateStr}` : 'Not yet unlocked'}</div>
+      <div class="ach-tier-pct">${pct}% of writers</div>
+    </div>
+  </div>`;
+  document.getElementById('ach-detail-overlay').classList.add('show');
+}
+function closeAchDetail() { document.getElementById('ach-detail-overlay').classList.remove('show'); }
 
 // ── Journal ────────────────────────────────────────────────────────────────
 function renderJournal() {
-  const noted = mySessions.filter(s => s.note && s.note.trim());
+  const sc = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
+  const sessionItems = mySessions.filter(s => s.note && s.note.trim()).map(s => ({ type:'session', sortKey: new Date(s.logged_at).getTime(), data: s }));
+  const entryItems = myJournalEntries.map(e => ({ type:'entry', sortKey: new Date(e.created_at).getTime(), data: e }));
+  const combined = [...sessionItems, ...entryItems].sort((a,b) => b.sortKey - a.sortKey).slice(0, 60);
   const el = document.getElementById('journal-entries');
-  if (!noted.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No notes yet. Add a note when logging a session.</div>'; return; }
-  const stageColors = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
-  el.innerHTML = noted.slice(0, 50).map(s => {
-    const proj = myProjects.find(p => p.id === s.project_id);
-    const wStr = s.stage === 'edit' ? (s.word_count >= 0 ? '+' : '') + s.word_count.toLocaleString() + ' words' : s.word_count.toLocaleString() + ' words';
-    const date = new Date(s.logged_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
-    return `<div class="journal-entry">
-      <div class="journal-date">${date}</div>
-      <div class="journal-note">"${s.note}"</div>
-      <div class="journal-meta"><span style="color:${stageColors[s.stage]};text-transform:uppercase;font-size:9px;letter-spacing:0.5px">${s.stage}</span> · ${wStr}${proj ? ' · ' + proj.name : ''}</div>
-    </div>`;
+  if (!combined.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No entries yet. Use "+ New Entry" to write, or add a note when logging a session.</div>'; return; }
+  el.innerHTML = combined.map(item => {
+    if (item.type === 'entry') {
+      const e = item.data;
+      const date = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      const tags = (e.tags || []).map(t => `<span class="journal-tag">${t}</span>`).join('');
+      return `<div class="journal-entry-standalone">
+        ${e.title ? `<div class="journal-entry-title">${e.title}</div>` : ''}
+        <div class="journal-entry-body">${e.body}</div>
+        <div class="journal-entry-meta">
+          <span class="journal-type-pill jtp-standalone">Journal</span>
+          <span class="journal-entry-date">${date}</span>
+        </div>
+        ${tags ? `<div class="journal-entry-tags">${tags}</div>` : ''}
+      </div>`;
+    } else {
+      const s = item.data;
+      const proj = myProjects.find(p => p.id === s.project_id);
+      const wStr = s.stage === 'edit' ? (s.word_count >= 0 ? '+' : '') + s.word_count.toLocaleString() + ' words' : s.word_count.toLocaleString() + ' words';
+      const date = new Date(s.logged_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      return `<div class="journal-entry-session">
+        <div style="font-size:11px;font-style:italic;color:var(--ink);line-height:1.55">"${s.note}"</div>
+        <div class="journal-entry-meta" style="margin-top:5px">
+          <span class="journal-type-pill jtp-session">Session note</span>
+          <span style="font-size:8px;text-transform:uppercase;letter-spacing:0.4px;color:${sc[s.stage]}">${s.stage}</span>
+          <span class="journal-entry-date">${date} · ${wStr}</span>
+          ${proj ? `<span class="journal-entry-date">· ${proj.name}</span>` : ''}
+        </div>
+      </div>`;
+    }
   }).join('');
 }
 
-// ── Stage / word counting ──────────────────────────────────────────────────
-const stageHints = {
-  plan:'Planning counts outlines, notes, and research — separate from your drafts.',
-  flow:'Flow writing logs brand new words only. Paste your draft or enter a count.',
-  edit:'Paste before and after versions — Inkwell calculates what changed.'
-};
+function openJournalModal() {
+  document.getElementById('jm-title').value = '';
+  document.getElementById('jm-body').value = '';
+  document.getElementById('jm-tags').value = '';
+  document.getElementById('jm-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('journal-modal-overlay').classList.add('show');
+  setTimeout(() => document.getElementById('jm-body').focus(), 80);
+}
+function closeJournalModal() { document.getElementById('journal-modal-overlay').classList.remove('show'); }
+async function saveJournalEntry() {
+  const title = document.getElementById('jm-title').value.trim();
+  const body = document.getElementById('jm-body').value.trim();
+  const tagsRaw = document.getElementById('jm-tags').value.trim();
+  const date = document.getElementById('jm-date').value;
+  if (!body) { showToast('Please write something before saving.'); return; }
+  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const { data, error } = await db.from('journal_entries').insert({
+    user_id: currentUser.id,
+    title: title || null,
+    body,
+    tags,
+    entry_date: date || new Date().toISOString().slice(0,10),
+  }).select().single();
+  if (error) { showToast('Error saving entry. Try again.'); return; }
+  myJournalEntries.unshift(data);
+  closeJournalModal();
+  renderJournal();
+  showToast('✓ Journal entry saved');
+}
+
+// ── Stage / counting ───────────────────────────────────────────────────────
+const stageHints = { plan:'Planning counts outlines, notes, and research — separate from your drafts.', flow:'Flow writing logs brand new words only. Paste your draft or enter a count.', edit:'Paste before and after versions — Inkwell calculates what changed.' };
 const stageColors = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
 const stageNames = {plan:'Plan',flow:'Flow write',edit:'Edit'};
-
 function setStage(s, el) {
   currentStage = s;
   document.querySelectorAll('.stage-tab').forEach(t => t.classList.remove('active'));
@@ -838,7 +1486,6 @@ function setStage(s, el) {
   document.getElementById('edit-area').style.display = s === 'edit' ? 'block' : 'none';
   s !== 'edit' ? countWords() : calcEditDiff();
 }
-
 function setInputMode(m) {
   inputMode = m;
   document.getElementById('paste-mode').style.display = m === 'paste' ? 'block' : 'none';
@@ -849,33 +1496,24 @@ function setInputMode(m) {
   document.getElementById('btn-manual').style.color = m === 'manual' ? 'var(--parchment)' : 'var(--ink)';
   countWords();
 }
-
 function countWords() {
-  let count = 0;
-  if (inputMode === 'paste') {
-    const t = document.getElementById('paste-area').value.trim();
-    count = t ? t.split(/\s+/).filter(w => w.length > 0).length : 0;
-  } else {
-    count = parseInt(document.getElementById('manual-count').value) || 0;
-  }
+  let count = inputMode === 'paste' ? (document.getElementById('paste-area').value.trim().split(/\s+/).filter(w=>w.length>0).length || 0) : (parseInt(document.getElementById('manual-count').value) || 0);
+  if (inputMode === 'paste' && !document.getElementById('paste-area').value.trim()) count = 0;
   sessionWordCount = count;
   document.getElementById('word-display').textContent = count.toLocaleString();
   document.getElementById('count-label').innerHTML = `words to log as <span style="color:${stageColors[currentStage]}">${stageNames[currentStage]}</span>`;
   document.getElementById('log-btn').disabled = count === 0;
 }
-
 function calcEditDiff() {
-  const before = document.getElementById('edit-before').value.trim();
-  const after = document.getElementById('edit-after').value.trim();
-  const wB = before ? before.split(/\s+/).filter(w => w.length > 0).length : 0;
-  const wA = after ? after.split(/\s+/).filter(w => w.length > 0).length : 0;
+  const wB = document.getElementById('edit-before').value.trim().split(/\s+/).filter(w=>w.length>0).length || 0;
+  const wA = document.getElementById('edit-after').value.trim().split(/\s+/).filter(w=>w.length>0).length || 0;
   const diff = wA - wB;
   const dd = document.getElementById('diff-display');
   if (!wB && !wA) { dd.innerHTML = '<div style="font-size:10px;color:var(--muted)">Paste both versions to see the difference</div>'; sessionWordCount = 0; document.getElementById('log-btn').disabled = true; return; }
   const col = diff < 0 ? 'var(--accent)' : diff === 0 ? 'var(--muted)' : 'var(--flow)';
-  dd.innerHTML = `<div style="font-size:9px;color:var(--muted);margin-bottom:4px">Word count change</div><div class="diff-num" style="color:${col}">${diff >= 0 ? '+' : ''}${diff.toLocaleString()}</div><div style="font-size:9px;color:var(--muted);margin-top:4px">${wB.toLocaleString()} → ${wA.toLocaleString()} words</div>`;
+  dd.innerHTML = `<div style="font-size:9px;color:var(--muted);margin-bottom:4px">Word count change</div><div class="diff-num" style="color:${col}">${diff>=0?'+':''}${diff.toLocaleString()}</div><div style="font-size:9px;color:var(--muted);margin-top:4px">${wB.toLocaleString()} → ${wA.toLocaleString()} words</div>`;
   sessionWordCount = diff;
-  document.getElementById('word-display').textContent = (diff >= 0 ? '+' : '') + diff.toLocaleString();
+  document.getElementById('word-display').textContent = (diff>=0?'+':'') + diff.toLocaleString();
   document.getElementById('count-label').innerHTML = `word change to log as <span style="color:var(--edit)">Edit</span>`;
   document.getElementById('log-btn').disabled = false;
 }
@@ -887,109 +1525,84 @@ async function logEntry() {
   const projectId = document.getElementById('write-project').value || null;
   document.getElementById('log-btn').disabled = true;
   document.getElementById('log-btn').textContent = 'Saving…';
-
   const { data, error } = await db.from('sessions').insert({
-    user_id: currentUser.id,
-    project_id: projectId,
-    stage: currentStage,
-    word_count: count,
-    note: note || null,
-    timer_total_seconds: pendingTimerData?.total || null,
-    timer_run_seconds: pendingTimerData?.run || null,
-    timer_paused_seconds: pendingTimerData?.paused || null,
+    user_id: currentUser.id, project_id: projectId, stage: currentStage, word_count: count, note: note || null,
+    timer_total_seconds: pendingTimerData?.total || null, timer_run_seconds: pendingTimerData?.run || null, timer_paused_seconds: pendingTimerData?.paused || null,
   }).select().single();
-
-  if (error) { showToast('Error saving session. Try again.'); document.getElementById('log-btn').disabled = false; document.getElementById('log-btn').textContent = 'Log session'; return; }
-
-  pendingTimerData = null;
-  mySessions.unshift(data);
-
-  // clear fields
-  document.getElementById('paste-area').value = '';
-  document.getElementById('manual-count').value = '';
-  document.getElementById('edit-before').value = '';
-  document.getElementById('edit-after').value = '';
-  document.getElementById('session-note').value = '';
+  if (error) { showToast('Error saving session.'); document.getElementById('log-btn').disabled = false; document.getElementById('log-btn').textContent = 'Log session'; return; }
+  pendingTimerData = null; mySessions.unshift(data);
+  ['paste-area','manual-count','edit-before','edit-after','session-note'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('word-display').textContent = '0';
   document.getElementById('log-btn').textContent = 'Log session';
   document.getElementById('diff-display').innerHTML = '<div style="font-size:10px;color:var(--muted)">Paste both versions to see the difference</div>';
   sessionWordCount = 0;
-
-  // check achievements
   await checkAchievements(count);
-
-  // reload stats and re-render
   const year = new Date().getFullYear();
   const { data: statsRes } = await db.from('yearly_stats').select('*').eq('year', year);
   allStats = statsRes || [];
-  renderStats();
-  renderWeekBars();
-  renderHeatmapFromSessions('heatmap-me', mySessions);
-  renderTodaySessions();
-  renderProjects();
-  renderJournal();
+  renderStats(); renderPacing(); renderWeekBars(); renderHeatmapFromSessions('heatmap-me', mySessions); renderTodaySessions(); renderProjects(); renderAnalytics(); renderJournal();
   showToast('✓ Session logged');
-
-  // midnight achievement
-  if (new Date().getHours() >= 0 && new Date().getHours() < 4) await unlockAchievement('midnight_oil');
+  if (new Date().getHours() < 4) await unlockAchievement('midnight_oil');
 }
 
 // ── Achievement checking ───────────────────────────────────────────────────
 async function checkAchievements(newCount) {
-  const unlockedKeys = new Set(myAchievements.map(a => a.achievement_key));
-  const year = new Date().getFullYear();
+  const uk = new Set(myAchievements.map(a => a.achievement_key));
   const myStats = allStats.find(s => s.user_id === currentUser.id) || {};
-  const flowWords = myStats.flow_words || 0;
-  const editSessions = myStats.edit_sessions || 0;
-  const planSessions = myStats.plan_sessions || 0;
+  const fw = myStats.flow_words || 0;
+  const es = myStats.edit_sessions || 0;
+  const ps = myStats.plan_sessions || 0;
   const streak = calcStreak(mySessions);
   const toCheck = [];
-  if (!unlockedKeys.has('first_words')) toCheck.push('first_words');
-  if (!unlockedKeys.has('chapter_one') && flowWords >= 10000) toCheck.push('chapter_one');
-  if (!unlockedKeys.has('nanowrimo') && flowWords >= 50000) toCheck.push('nanowrimo');
-  if (!unlockedKeys.has('novelist') && flowWords >= 80000) toCheck.push('novelist');
-  if (!unlockedKeys.has('refiner') && editSessions >= 10) toCheck.push('refiner');
-  if (!unlockedKeys.has('architect') && planSessions >= 20) toCheck.push('architect');
-  if (!unlockedKeys.has('world_builder') && planSessions >= 50) toCheck.push('world_builder');
-  if (!unlockedKeys.has('kindling') && streak >= 7) toCheck.push('kindling');
-  if (!unlockedKeys.has('long_haul') && streak >= 30) toCheck.push('long_haul');
-  if (!unlockedKeys.has('annual_oath') && streak >= 365) toCheck.push('annual_oath');
-  if (!unlockedKeys.has('in_the_flow') && currentStage === 'flow' && newCount >= 2000) toCheck.push('in_the_flow');
-  if (!unlockedKeys.has('lightning_draft') && currentStage === 'flow' && newCount >= 5000) toCheck.push('lightning_draft');
-  if (!unlockedKeys.has('word_demon')) {
-    const today = new Date().toISOString().slice(0,10);
-    const todayFlow = mySessions.filter(s => s.logged_at.slice(0,10) === today && s.stage === 'flow' && s.word_count > 0).reduce((sum,s) => sum + s.word_count, 0);
-    if (todayFlow >= 10000) toCheck.push('word_demon');
+  if (!uk.has('first_words')) toCheck.push('first_words');
+  // Words
+  const wordThresholds = [['words_wood',1000],['chapter_one',10000],['words_silver',25000],['nanowrimo',50000],['novelist',80000],['words_sapphire',100000],['words_ruby',250000],['words_emerald',500000],['words_diamond',1000000]];
+  for (const [k,t] of wordThresholds) if (!uk.has(k) && fw >= t) toCheck.push(k);
+  // Streak
+  const streakThresholds = [['streak_wood',3],['kindling',7],['streak_silver',14],['long_haul',30],['streak_platinum',60],['streak_sapphire',100],['streak_ruby',200],['streak_emerald',300],['annual_oath',365]];
+  for (const [k,t] of streakThresholds) if (!uk.has(k) && streak >= t) toCheck.push(k);
+  // Edit
+  const editThresholds = [['refiner',10],['edit_silver',25],['edit_gold',50],['edit_platinum',100]];
+  for (const [k,t] of editThresholds) if (!uk.has(k) && es >= t) toCheck.push(k);
+  // Plan
+  const planThresholds = [['architect',20],['world_builder',50],['plan_gold',100],['plan_platinum',200]];
+  for (const [k,t] of planThresholds) if (!uk.has(k) && ps >= t) toCheck.push(k);
+  // Single session
+  if (currentStage === 'flow') {
+    const sessionThresholds = [['in_the_flow',2000],['lightning_draft',5000],['session_gold',10000],['session_diamond',25000]];
+    for (const [k,t] of sessionThresholds) if (!uk.has(k) && newCount >= t) toCheck.push(k);
   }
+  // Daily output
+  const today = new Date().toISOString().slice(0,10);
+  const todayFlow = mySessions.filter(s => s.logged_at.slice(0,10) === today && s.stage === 'flow' && s.word_count > 0).reduce((sum,s) => sum+s.word_count, 0);
+  const dailyThresholds = [['word_demon',10000],['daily_diamond',25000]];
+  for (const [k,t] of dailyThresholds) if (!uk.has(k) && todayFlow >= t) toCheck.push(k);
   for (const key of toCheck) await unlockAchievement(key);
 }
 
 async function unlockAchievement(key) {
-  const already = myAchievements.find(a => a.achievement_key === key);
-  if (already) return;
+  if (myAchievements.find(a => a.achievement_key === key)) return;
   const { data } = await db.from('achievements').insert({ user_id: currentUser.id, achievement_key: key }).select().single();
   if (data) {
     myAchievements.push(data);
-    const def = ACHIEVEMENT_DEFS.find(a => a.key === key);
+    allAchievementsGlobal.push({ achievement_key: key, user_id: currentUser.id });
+    const def = getAchievementDef(key);
     if (def) { renderTrophies(); showAchievementPopup(def); }
   }
 }
-
 function showAchievementPopup(def) {
   document.getElementById('ach-icon').textContent = def.icon;
   document.getElementById('ach-title').textContent = def.name;
   document.getElementById('ach-sub').textContent = def.desc;
   const badge = document.getElementById('ach-badge');
-  badge.textContent = def.tier.toUpperCase();
+  badge.textContent = TIER_STYLES[def.tier]?.label || def.tier;
   badge.className = 'trophy-badge badge-' + def.tier;
   document.getElementById('ach-overlay').classList.add('show');
 }
-
 function closeAch() { document.getElementById('ach-overlay').classList.remove('show'); }
 
 // ── Timer ──────────────────────────────────────────────────────────────────
 function fmtTime(s) { return Math.floor(s/60).toString().padStart(2,'0') + ':' + (s%60).toString().padStart(2,'0'); }
-
 function timerStart() {
   if (timerState !== 'idle') return;
   timerState = 'running'; timerPhaseStart = Date.now();
@@ -998,65 +1611,50 @@ function timerStart() {
   document.getElementById('tbtn-stop').style.display = '';
   timerTick_ = setInterval(() => {
     const run = timerRun + Math.round((Date.now() - timerPhaseStart) / 1000);
-    const total = run + timerPaused;
-    document.getElementById('timer-display').textContent = fmtTime(total);
+    document.getElementById('timer-display').textContent = fmtTime(run + timerPaused);
     document.getElementById('timer-meta').style.display = '';
     document.getElementById('timer-meta').textContent = `Running: ${fmtTime(run)}  |  Paused: ${fmtTime(timerPaused)}`;
-    if (sessionWordCount > 0 && run > 0) document.getElementById('wph-display').textContent = Math.round((sessionWordCount / run) * 3600).toLocaleString() + ' w/hr';
+    if (sessionWordCount > 0 && run > 0) document.getElementById('wph-display').textContent = Math.round((sessionWordCount/run)*3600).toLocaleString() + ' w/hr';
   }, 1000);
 }
-
 function timerPause() {
   if (timerState === 'running') {
-    timerRun += Math.round((Date.now() - timerPhaseStart) / 1000);
-    timerPhaseStart = Date.now(); timerState = 'paused';
-    document.getElementById('tbtn-pause').textContent = 'Resume';
-    document.getElementById('tbtn-pause').classList.replace('pause-btn','start');
+    timerRun += Math.round((Date.now() - timerPhaseStart) / 1000); timerPhaseStart = Date.now(); timerState = 'paused';
+    document.getElementById('tbtn-pause').textContent = 'Resume'; document.getElementById('tbtn-pause').classList.replace('pause-btn','start');
   } else if (timerState === 'paused') {
-    timerPaused += Math.round((Date.now() - timerPhaseStart) / 1000);
-    timerPhaseStart = Date.now(); timerState = 'running';
-    document.getElementById('tbtn-pause').textContent = 'Pause';
-    document.getElementById('tbtn-pause').classList.replace('start','pause-btn');
+    timerPaused += Math.round((Date.now() - timerPhaseStart) / 1000); timerPhaseStart = Date.now(); timerState = 'running';
+    document.getElementById('tbtn-pause').textContent = 'Pause'; document.getElementById('tbtn-pause').classList.replace('start','pause-btn');
   }
 }
-
 function timerStop() {
   clearInterval(timerTick_);
   if (timerState === 'running') timerRun += Math.round((Date.now() - timerPhaseStart) / 1000);
   else if (timerState === 'paused') timerPaused += Math.round((Date.now() - timerPhaseStart) / 1000);
   timerState = 'stopped';
-  document.getElementById('tbtn-pause').style.display = 'none';
-  document.getElementById('tbtn-stop').style.display = 'none';
-  document.getElementById('tbtn-save').style.display = '';
+  document.getElementById('tbtn-pause').style.display = 'none'; document.getElementById('tbtn-stop').style.display = 'none';
+  document.getElementById('tbtn-save').style.display = ''; document.getElementById('tbtn-discard').style.display = '';
   document.getElementById('timer-meta').textContent = `Running: ${fmtTime(timerRun)}  |  Paused: ${fmtTime(timerPaused)}`;
 }
-
 function timerSavePrompt() {
-  document.getElementById('confirm-sub').innerHTML = `Total: <strong>${fmtTime(timerRun + timerPaused)}</strong><br>Writing: ${fmtTime(timerRun)} &nbsp;|&nbsp; Paused: ${fmtTime(timerPaused)}<br><br>Save this time with your next logged session?`;
+  document.getElementById('confirm-sub').innerHTML = `Total: <strong>${fmtTime(timerRun+timerPaused)}</strong><br>Writing: ${fmtTime(timerRun)} &nbsp;|&nbsp; Paused: ${fmtTime(timerPaused)}<br><br>Save this time with your next logged session?`;
   document.getElementById('confirm-overlay').classList.add('show');
 }
-
 function timerConfirmSave() {
-  pendingTimerData = { total: timerRun + timerPaused, run: timerRun, paused: timerPaused };
-  closeConfirm();
-  showToast(`⏱ Time saved: ${fmtTime(timerRun)} writing — will attach to next session`);
-  timerReset();
+  pendingTimerData = { total: timerRun+timerPaused, run: timerRun, paused: timerPaused };
+  closeConfirm(); showToast(`⏱ Time saved: ${fmtTime(timerRun)} writing — will attach to next session`); timerReset();
 }
-
+function timerDiscardPrompt() { document.getElementById('discard-overlay').classList.add('show'); }
+function timerConfirmDiscard() { closeDiscard(); timerReset(); showToast('Session time discarded'); }
 function timerReset() {
   clearInterval(timerTick_); timerState = 'idle'; timerRun = 0; timerPaused = 0; timerPhaseStart = 0;
-  document.getElementById('timer-display').textContent = '00:00';
-  document.getElementById('timer-meta').style.display = 'none';
-  document.getElementById('tbtn-start').style.display = '';
-  document.getElementById('tbtn-pause').style.display = 'none';
-  document.getElementById('tbtn-stop').style.display = 'none';
-  document.getElementById('tbtn-save').style.display = 'none';
-  document.getElementById('tbtn-pause').textContent = 'Pause';
-  document.getElementById('tbtn-pause').className = 'tbtn pause-btn';
-  document.getElementById('wph-display').textContent = '';
+  document.getElementById('timer-display').textContent = '00:00'; document.getElementById('timer-meta').style.display = 'none';
+  document.getElementById('tbtn-start').style.display = ''; document.getElementById('tbtn-pause').style.display = 'none';
+  document.getElementById('tbtn-stop').style.display = 'none'; document.getElementById('tbtn-save').style.display = 'none';
+  document.getElementById('tbtn-discard').style.display = 'none'; document.getElementById('tbtn-pause').textContent = 'Pause';
+  document.getElementById('tbtn-pause').className = 'tbtn pause-btn'; document.getElementById('wph-display').textContent = '';
 }
-
 function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+function closeDiscard() { document.getElementById('discard-overlay').classList.remove('show'); }
 
 // ── Nav & utils ────────────────────────────────────────────────────────────
 function showPage(p, el) {
@@ -1066,14 +1664,12 @@ function showPage(p, el) {
   if (el) el.classList.add('active');
   if (p === 'league') { showLeagueMain(); renderLeague(); }
 }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-// ── Boot ───────────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
