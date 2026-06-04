@@ -109,6 +109,51 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .edit-icon-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 5px;color:var(--muted);opacity:0.6;transition:opacity 0.15s;line-height:1;}
 .edit-icon-btn:hover{opacity:1;}
 
+/* ── Notification bell ── */
+.notif-bell-wrap{position:relative;display:flex;align-items:center;}
+.notif-bell{background:none;border:none;cursor:pointer;font-size:16px;padding:4px 6px;line-height:1;opacity:0.7;transition:opacity 0.15s;}
+.notif-bell:hover{opacity:1;}
+.notif-badge{position:absolute;top:-2px;right:-2px;background:var(--accent);color:white;border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;pointer-events:none;}
+
+/* ── Inbox overlay ── */
+.inbox-overlay{position:fixed;inset:0;background:rgba(26,19,16,0.6);display:flex;align-items:flex-start;justify-content:flex-end;z-index:220;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.inbox-overlay.show{opacity:1;pointer-events:all;}
+.inbox-box{background:var(--parchment);border-left:1px solid var(--border);width:340px;max-width:92vw;height:100%;overflow-y:auto;padding:20px 18px;}
+.inbox-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.inbox-title{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;}
+.inbox-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);line-height:1;padding:0;}
+.inbox-section{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.inbox-notif{padding:10px 12px;border:1px solid var(--border);border-radius:4px;margin-bottom:6px;background:var(--surface);font-size:11px;}
+.inbox-notif.unread{border-color:var(--sepia);background:white;}
+.inbox-notif-name{font-family:'Playfair Display',serif;font-size:13px;margin-bottom:3px;}
+.inbox-notif-meta{font-size:9px;color:var(--muted);margin-bottom:8px;}
+.inbox-actions{display:flex;gap:6px;}
+.inbox-accept{padding:5px 14px;background:var(--flow);color:white;border:none;border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+.inbox-decline{padding:5px 14px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+
+/* ── Challenge modal ── */
+.challenge-overlay{position:fixed;inset:0;background:rgba(26,19,16,0.7);display:flex;align-items:center;justify-content:center;z-index:225;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.challenge-overlay.show{opacity:1;pointer-events:all;}
+.challenge-box{background:var(--parchment);border:1.5px solid var(--border);border-radius:8px;padding:24px 28px;max-width:380px;width:92%;}
+.challenge-type-row{display:flex;gap:6px;margin-top:6px;}
+.challenge-type-btn{flex:1;padding:8px 6px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;background:var(--surface);text-align:center;transition:all 0.15s;}
+.challenge-type-btn.active{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
+
+/* ── Rivalry tab ── */
+.rivalry-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px;}
+.rivalry-vs{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:14px;}
+.rivalry-player{text-align:center;}
+.rivalry-player-name{font-family:'Playfair Display',serif;font-size:14px;margin-bottom:2px;}
+.rivalry-player-score{font-size:24px;font-family:'Playfair Display',serif;}
+.rivalry-target{text-align:center;font-size:10px;color:var(--muted);}
+.rivalry-bars{display:flex;flex-direction:column;gap:6px;}
+.rivalry-bar-row{display:flex;align-items:center;gap:8px;font-size:10px;}
+.rivalry-bar-bg{flex:1;height:8px;background:var(--sepia-light);border-radius:4px;overflow:hidden;}
+.rivalry-bar-fill{height:100%;border-radius:4px;transition:width 0.8s;}
+.rivalry-status-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8px;text-transform:uppercase;letter-spacing:0.4px;}
+.status-pending-pill{background:#fff8e1;color:#6d4c00;border:1px solid var(--sepia-light);}
+.status-active-pill{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9;}
+
 /* ── League inner tabs ── */
 .league-inner-tabs{display:flex;gap:1px;margin-bottom:14px;border-bottom:1px solid var(--border);}
 .league-inner-tab{background:none;border:none;padding:7px 14px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
@@ -245,6 +290,9 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .lb-bar-fill{height:100%;border-radius:3px;}
 .lb-val{font-size:11px;color:var(--muted);min-width:65px;text-align:right;}
 .lb-hint{font-size:9px;color:var(--muted);font-style:italic;margin-top:8px;}
+.lb-select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;background:var(--surface);color:var(--ink);cursor:pointer;appearance:auto;}
+.lb-select:focus{outline:2px solid var(--sepia);border-color:var(--sepia);}
+.lb-select-label{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:5px;}
 .back-btn{font-size:10px;color:var(--muted);cursor:pointer;text-decoration:underline;margin-bottom:12px;display:inline-block;background:none;border:none;font-family:'DM Mono',monospace;}
 .compare-person{text-align:center;}
 .compare-name{font-family:'Playfair Display',serif;font-size:14px;margin-bottom:3px;}
@@ -413,6 +461,10 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
       <button class="nav-tab" onclick="showPage('journal',this)">Journal</button>
     </div>
     <div class="user-pill">
+      <div class="notif-bell-wrap">
+        <button class="notif-bell" onclick="openInbox()" title="Inbox">🔔</button>
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </div>
       <div class="avatar" id="my-avatar" onclick="openProfileModal()" style="background:var(--sepia-dark);color:var(--parchment);cursor:pointer" title="Profile settings">?</div>
       <button class="sign-out-btn" onclick="handleSignOut()">sign out</button>
     </div>
@@ -560,17 +612,42 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
     <div class="league-inner-tabs">
       <button class="league-inner-tab active" id="ltab-leaderboard" onclick="showLeagueTab('leaderboard')">Leaderboard</button>
       <button class="league-inner-tab" id="ltab-seasons" onclick="showLeagueTab('seasons')">Seasons</button>
+      <button class="league-inner-tab" id="ltab-rivalry" onclick="showLeagueTab('rivalry')">Rivalry</button>
     </div>
     <div id="league-main">
-      <div class="metric-pills" id="time-filter-pills" style="margin-bottom:6px"></div>
-      <div class="metric-pills" id="metric-pills"></div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <div style="flex:1">
+          <div class="lb-select-label">Period</div>
+          <select class="lb-select" id="lb-time-select" onchange="setTimeFilter(this.value)">
+            <option value="today">Today</option>
+            <option value="week">This week</option>
+            <option value="month">This month</option>
+            <option value="year" selected>This year</option>
+            <option value="alltime">All time</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <div class="lb-select-label">Rank by</div>
+          <select class="lb-select" id="lb-metric-select" onchange="setMetric(this.value)">
+            <option value="flow_words" selected>Flow words</option>
+            <option value="total_words">Total words</option>
+            <option value="streak">Streak</option>
+            <option value="edit_sessions">Edit sessions</option>
+            <option value="plan_sessions">Plan sessions</option>
+            <option value="active_days">Active days</option>
+          </select>
+        </div>
+      </div>
       <div id="lb-table"></div>
-      <div class="lb-hint">Click a writer to see head-to-head stats</div>
+      <div class="lb-hint">Click a writer to see head-to-head</div>
     </div>
     <div id="league-seasons" style="display:none">
       <div class="metric-pills" id="season-pills" style="margin-bottom:14px"></div>
       <div id="season-header-area"></div>
       <div id="season-lb-table"></div>
+    </div>
+    <div id="league-rivalry" style="display:none">
+      <div id="rivalry-content"></div>
     </div>
     <div id="league-h2h" style="display:none">
       <button class="back-btn" onclick="showLeagueMain()">← Back to leaderboard</button>
@@ -602,10 +679,11 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 
   <!-- JOURNAL -->
   <div class="page" id="page-journal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
       <div class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0" id="journal-title">Writing journal</div>
       <button class="new-entry-btn" onclick="openJournalModal()">+ New Entry</button>
     </div>
+    <div class="metric-pills" id="journal-filter-pills" style="margin-bottom:10px"></div>
     <div style="border-bottom:1px solid var(--border);margin-bottom:12px"></div>
     <div id="journal-entries"><div style="font-size:11px;color:var(--muted)">No entries yet.</div></div>
   </div>
@@ -714,6 +792,39 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
   </div>
 </div>
 
+<!-- Inbox overlay -->
+<div class="inbox-overlay" id="inbox-overlay" onclick="inboxOverlayClick(event)">
+  <div class="inbox-box" id="inbox-box">
+    <div class="inbox-header">
+      <div class="inbox-title">Inbox</div>
+      <button class="inbox-close" onclick="closeInbox()">×</button>
+    </div>
+    <div id="inbox-content"><div style="font-size:11px;color:var(--muted)">Loading…</div></div>
+  </div>
+</div>
+
+<!-- Challenge modal -->
+<div class="challenge-overlay" id="challenge-overlay">
+  <div class="challenge-box">
+    <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px">Challenge to Rivalry</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">vs <span id="challenge-vs-name" style="color:var(--ink);font-style:italic"></span></div>
+    <span class="se-label">Challenge type</span>
+    <div class="challenge-type-row">
+      <div class="challenge-type-btn active" id="ctype-words"   onclick="setChallengeType('words')">✍️ Words</div>
+      <div class="challenge-type-btn"         id="ctype-sessions" onclick="setChallengeType('sessions')">📋 Sessions</div>
+      <div class="challenge-type-btn"         id="ctype-hours"   onclick="setChallengeType('hours')">⏱ Hours</div>
+    </div>
+    <span class="se-label">Target</span>
+    <input class="se-input" id="challenge-target" type="number" min="1" placeholder="e.g. 10000">
+    <div id="challenge-target-hint" style="font-size:9px;color:var(--muted);margin-top:4px;font-style:italic">First to write 10,000 flow words</div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="confirm-yes" onclick="sendChallenge()">Send challenge</button>
+      <button class="confirm-no" onclick="closeChallengeModal()">Cancel</button>
+    </div>
+    <div id="challenge-error" style="font-size:10px;color:var(--accent);margin-top:8px;min-height:14px"></div>
+  </div>
+</div>
+
 <!-- Profile settings modal -->
 <div class="profile-overlay" id="profile-overlay">
   <div class="profile-box">
@@ -765,6 +876,11 @@ let profileSelectedColor = '#8b6914';
 // Batch 6 state
 let myChapters = [];
 let currentSeasonKey = null, seasonCountdownInterval = null, seasonLbCache = {};
+// Batch 7 state
+let myRivalries = [], myNotifications = [], unreadCount = 0;
+let challengeTargetId = null, challengeTargetName = '', challengeType = 'words';
+// Batch 7.1 state
+let journalFilter = 'all';
 
 const TIME_FILTERS = [
   {key:'today', label:'Today'}, {key:'week', label:'This week'},
@@ -914,7 +1030,7 @@ function switchAuthTab(tab) {
 // ── Data loading ───────────────────────────────────────────────────────────
 async function loadAllData() {
   const year = new Date().getFullYear();
-  const [projRes, sessRes, achRes, statsRes, achAllRes, journalRes, allTimeRes, chapRes] = await Promise.all([
+  const [projRes, sessRes, achRes, statsRes, achAllRes, journalRes, allTimeRes, chapRes, rivalryRes, notifRes] = await Promise.all([
     db.from('projects').select('*').eq('user_id', currentUser.id).eq('archived', false).order('created_at'),
     db.from('sessions').select('*').eq('user_id', currentUser.id).gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false }),
     db.from('achievements').select('*').eq('user_id', currentUser.id),
@@ -923,6 +1039,8 @@ async function loadAllData() {
     db.from('journal_entries').select('*').eq('user_id', currentUser.id).order('entry_date', { ascending: false }),
     db.from('yearly_stats').select('flow_words').eq('user_id', currentUser.id),
     db.from('chapters').select('*').eq('user_id', currentUser.id).order('chapter_number'),
+    db.from('rivalries').select('*').or(`challenger_id.eq.${currentUser.id},challenged_id.eq.${currentUser.id}`).not('status','in','("completed","declined","cancelled")').order('created_at', {ascending:false}),
+    db.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false}).limit(30),
   ]);
   myProjects = projRes.data || [];
   mySessions = sessRes.data || [];
@@ -932,6 +1050,9 @@ async function loadAllData() {
   myJournalEntries = journalRes.data || [];
   allTimeFlowWords = (allTimeRes.data || []).reduce((sum, s) => sum + (s.flow_words || 0), 0);
   myChapters = chapRes.data || [];
+  myRivalries = rivalryRes.data || [];
+  myNotifications = notifRes.data || [];
+  unreadCount = myNotifications.filter(n => !n.read).length;
 }
 
 // ── Render all ─────────────────────────────────────────────────────────────
@@ -946,6 +1067,7 @@ function renderAll() {
   document.getElementById('trophy-cabinet-title').textContent = `${name}'s trophy cabinet`;
   document.getElementById('journal-title').textContent = `Writing journal — ${name}`;
   document.getElementById('dash-year').textContent = year;
+  updateNotifBadge();
   renderStats();
   renderPacing();
   renderWeekBars();
@@ -1520,18 +1642,18 @@ function renderLeague() {
 }
 
 function showLeagueTab(tab) {
-  const isLb = tab === 'leaderboard';
-  document.getElementById('league-main').style.display    = isLb ? 'block' : 'none';
-  document.getElementById('league-seasons').style.display = isLb ? 'none'  : 'block';
-  document.getElementById('league-h2h').style.display     = 'none';
-  document.getElementById('ltab-leaderboard').classList.toggle('active', isLb);
-  document.getElementById('ltab-seasons').classList.toggle('active', !isLb);
-  if (!isLb) {
+  const tabs = ['leaderboard','seasons','rivalry'];
+  tabs.forEach(t => {
+    const mainDiv = t === 'leaderboard' ? 'league-main' : `league-${t}`;
+    document.getElementById(mainDiv).style.display = t === tab ? 'block' : 'none';
+    document.getElementById(`ltab-${t}`).classList.toggle('active', t === tab);
+  });
+  document.getElementById('league-h2h').style.display = 'none';
+  if (tab === 'seasons') {
     if (!currentSeasonKey) currentSeasonKey = getCurrentSeason()?.key;
     renderSeasonsView();
-  } else {
-    stopSeasonCountdown();
-  }
+  } else { stopSeasonCountdown(); }
+  if (tab === 'rivalry') renderRivalryTab();
 }
 
 // ── Seasonal leagues ───────────────────────────────────────────────────────
@@ -1616,8 +1738,8 @@ function renderSeasonLeaderboard(rows) {
 }
 
 function renderTimeFilterPills() {
-  document.getElementById('time-filter-pills').innerHTML = TIME_FILTERS.map(f =>
-    `<div class="metric-pill${f.key===currentTimeFilter?' active':''}" onclick="setTimeFilter('${f.key}')">${f.label}</div>`).join('');
+  const sel = document.getElementById('lb-time-select');
+  if (sel) sel.value = currentTimeFilter;
 }
 
 async function setTimeFilter(key) {
@@ -1658,8 +1780,8 @@ function computeStatsFromSessions(sessions) {
 }
 
 function renderMetricPills() {
-  document.getElementById('metric-pills').innerHTML = METRICS.map(m =>
-    `<div class="metric-pill${m.key===currentMetric?' active':''}" onclick="setMetric('${m.key}')">${m.label}</div>`).join('');
+  const sel = document.getElementById('lb-metric-select');
+  if (sel) sel.value = currentMetric;
 }
 function setMetric(k) { currentMetric = k; renderMetricPills(); renderLeaderboard(); }
 function renderLeaderboard() {
@@ -1700,6 +1822,16 @@ async function openH2H(otherId) {
   renderHeatmapFromSessions('heatmap-h2h-me', mySessions);
   renderHeatmapFromSessions('heatmap-h2h-them', h2hOtherSessions);
   renderH2HProjects();
+  // Challenge button — only if no active or pending rivalry
+  const activeRivalry = myRivalries.find(r => r.status === 'active');
+  const pendingOut = myRivalries.find(r => r.status === 'pending' && r.challenger_id === currentUser.id);
+  const alreadyRivals = myRivalries.find(r => (r.challenger_id===otherId||r.challenged_id===otherId));
+  const canChallenge = !activeRivalry && !pendingOut && !alreadyRivals;
+  const challengeHtml = canChallenge
+    ? `<div style="text-align:center;margin-top:16px"><button class="confirm-yes" onclick="openChallengeModal('${otherId}','${other.display_name.replace(/'/g,"\\'")}')">⚔️ Challenge to rivalry</button></div>`
+    : alreadyRivals ? `<div style="text-align:center;margin-top:16px;font-size:10px;color:var(--muted);font-style:italic">You already have a rivalry with this writer</div>`
+    : `<div style="text-align:center;margin-top:16px;font-size:10px;color:var(--muted);font-style:italic">Complete or concede your current rivalry before challenging someone new</div>`;
+  document.getElementById('h2h-compare').insertAdjacentHTML('afterend', challengeHtml);
   document.getElementById('league-main').style.display = 'none';
   document.getElementById('league-h2h').style.display = 'block';
 }
@@ -1780,8 +1912,11 @@ function setH2HFilter(status) { h2hStatusFilter = status; renderH2HProjects(); }
 function showLeagueMain() {
   document.getElementById('league-h2h').style.display = 'none';
   document.getElementById('league-main').style.display = 'block';
+  document.getElementById('league-seasons').style.display = 'none';
+  document.getElementById('league-rivalry').style.display = 'none';
   document.getElementById('ltab-leaderboard').classList.add('active');
   document.getElementById('ltab-seasons').classList.remove('active');
+  document.getElementById('ltab-rivalry').classList.remove('active');
 }
 
 // ── Achievement helpers ────────────────────────────────────────────────────
@@ -1917,13 +2052,35 @@ function openStandaloneDetail(key) {
 function closeAchDetail() { document.getElementById('ach-detail-overlay').classList.remove('show'); }
 
 // ── Journal ────────────────────────────────────────────────────────────────
+function setJournalFilter(f) { journalFilter = f; renderJournal(); }
+
 function renderJournal() {
   const sc = {plan:'var(--plan)',flow:'var(--flow)',edit:'var(--edit)'};
-  const sessionItems = mySessions.filter(s => s.note && s.note.trim()).map(s => ({ type:'session', sortKey: new Date(s.logged_at).getTime(), data: s }));
-  const entryItems = myJournalEntries.map(e => ({ type:'entry', sortKey: new Date(e.created_at).getTime(), data: e }));
+
+  // Filter pills
+  const pillsEl = document.getElementById('journal-filter-pills');
+  if (pillsEl) {
+    const filters = [{key:'all',label:'All'},{key:'entries',label:'Journal entries'},{key:'sessions',label:'Session notes'}];
+    pillsEl.innerHTML = filters.map(f =>
+      `<div class="metric-pill${journalFilter===f.key?' active':''}" onclick="setJournalFilter('${f.key}')">${f.label}</div>`
+    ).join('');
+  }
+
+  // Build combined list
+  const sessionItems = journalFilter !== 'entries'
+    ? mySessions.filter(s => s.note && s.note.trim()).map(s => ({ type:'session', sortKey: new Date(s.logged_at).getTime(), data: s }))
+    : [];
+  const entryItems = journalFilter !== 'sessions'
+    ? myJournalEntries.map(e => ({ type:'entry', sortKey: new Date(e.created_at).getTime(), data: e }))
+    : [];
   const combined = [...sessionItems, ...entryItems].sort((a,b) => b.sortKey - a.sortKey).slice(0, 60);
+
   const el = document.getElementById('journal-entries');
-  if (!combined.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No entries yet. Use "+ New Entry" to write, or add a note when logging a session.</div>'; return; }
+  if (!combined.length) {
+    el.innerHTML = `<div style="font-size:11px;color:var(--muted)">No ${journalFilter === 'entries' ? 'journal entries' : journalFilter === 'sessions' ? 'session notes' : 'entries'} yet.${journalFilter !== 'entries' ? ' Add a note when logging a session.' : ''}</div>`;
+    return;
+  }
+
   el.innerHTML = combined.map(item => {
     if (item.type === 'entry') {
       const e = item.data;
@@ -1932,8 +2089,10 @@ function renderJournal() {
       return `<div class="journal-entry-standalone">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
           <div style="flex:1">${e.title ? `<div class="journal-entry-title">${e.title}</div>` : ''}</div>
-          <button class="edit-icon-btn" onclick="editJournalEntry('${e.id}')" title="Edit entry">✏️</button>
-          <button class="journal-delete-btn" onclick="deleteJournalEntry('${e.id}')" title="Delete entry">🗑</button>
+          <div style="display:flex;gap:2px;flex-shrink:0">
+            <button class="edit-icon-btn" onclick="editJournalEntry('${e.id}')" title="Edit entry">✏️</button>
+            <button class="journal-delete-btn" onclick="deleteJournalEntry('${e.id}')" title="Delete entry">🗑</button>
+          </div>
         </div>
         <div class="journal-entry-body">${e.body}</div>
         <div class="journal-entry-meta">
@@ -1948,7 +2107,10 @@ function renderJournal() {
       const wStr = s.stage === 'edit' ? (s.word_count >= 0 ? '+' : '') + s.word_count.toLocaleString() + ' words' : s.word_count.toLocaleString() + ' words';
       const date = new Date(s.logged_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
       return `<div class="journal-entry-session">
-        <div style="font-size:11px;font-style:italic;color:var(--ink);line-height:1.55">"${s.note}"</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="font-size:11px;font-style:italic;color:var(--ink);line-height:1.55;flex:1">"${s.note}"</div>
+          <button class="edit-icon-btn" onclick="openSessionEdit('${s.id}')" title="Edit session">✏️</button>
+        </div>
         <div class="journal-entry-meta" style="margin-top:5px">
           <span class="journal-type-pill jtp-session">Session note</span>
           <span style="font-size:8px;text-transform:uppercase;letter-spacing:0.4px;color:${sc[s.stage]}">${s.stage}</span>
@@ -2132,6 +2294,7 @@ async function logEntry() {
   const { data: allTimeRes } = await db.from('yearly_stats').select('flow_words').eq('user_id', currentUser.id);
   allTimeFlowWords = (allTimeRes || []).reduce((sum, s) => sum + (s.flow_words || 0), 0);
   await checkAchievements(count);
+  await updateRivalryProgress();
   renderStats(); renderPacing(); renderWeekBars(); renderHeatmapFromSessions('heatmap-me', mySessions); renderTodaySessions(); renderProjects(); renderAnalytics(); renderJournal();
   showToast('✓ Session logged');
   if (new Date().getHours() < 4) await unlockAchievement('midnight_oil');
@@ -2328,7 +2491,274 @@ function timerReset() {
 function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
 function closeDiscard() { document.getElementById('discard-overlay').classList.remove('show'); }
 
-// ── Nav & utils ────────────────────────────────────────────────────────────
+// ── Rivalries ──────────────────────────────────────────────────────────────
+function getMyActiveRivalry()  { return myRivalries.find(r => r.status === 'active'); }
+function getMyPendingOut()     { return myRivalries.find(r => r.status === 'pending' && r.challenger_id === currentUser.id); }
+function getMyPendingIn()      { return myRivalries.filter(r => r.status === 'pending' && r.challenged_id === currentUser.id); }
+
+function computeProgress(rivalry, userId) {
+  if (!rivalry.started_at) return 0;
+  const started = rivalry.started_at;
+  const sessions = mySessions.filter(s => s.logged_at >= started && s.user_id === userId || (userId === currentUser.id && s.logged_at >= started));
+  // For current user use mySessions, for opponent use stored value
+  if (userId !== currentUser.id) {
+    return userId === rivalry.challenger_id ? (rivalry.challenger_progress || 0) : (rivalry.challenged_progress || 0);
+  }
+  if (rivalry.challenge_type === 'words')    return sessions.filter(s=>s.stage==='flow'&&s.word_count>0).reduce((sum,s)=>sum+s.word_count,0);
+  if (rivalry.challenge_type === 'sessions') return sessions.length;
+  if (rivalry.challenge_type === 'hours')    return Math.floor(sessions.reduce((sum,s)=>sum+(s.timer_run_seconds||0),0)/3600);
+  return 0;
+}
+
+async function updateRivalryProgress() {
+  const rivalry = getMyActiveRivalry(); if (!rivalry) return;
+  const myProgress = computeProgress(rivalry, currentUser.id);
+  const isChallenger = rivalry.challenger_id === currentUser.id;
+  const field = isChallenger ? 'challenger_progress' : 'challenged_progress';
+  await db.from('rivalries').update({ [field]: myProgress }).eq('id', rivalry.id);
+  rivalry[field] = myProgress;
+  // Update local state
+  const idx = myRivalries.findIndex(r => r.id === rivalry.id);
+  if (idx >= 0) myRivalries[idx] = { ...rivalry, [field]: myProgress };
+  if (myProgress >= rivalry.target_value) await completeRivalry(rivalry, currentUser.id);
+}
+
+async function completeRivalry(rivalry, winnerId) {
+  const loserId = winnerId === rivalry.challenger_id ? rivalry.challenged_id : rivalry.challenger_id;
+  await db.from('rivalries').update({ status:'completed', winner_id:winnerId, completed_at:new Date().toISOString() }).eq('id', rivalry.id);
+  await db.from('notifications').insert([
+    { user_id:winnerId, type:'rivalry_won',  from_user_id:loserId,  rivalry_id:rivalry.id },
+    { user_id:loserId,  type:'rivalry_lost', from_user_id:winnerId, rivalry_id:rivalry.id },
+  ]);
+  myRivalries = myRivalries.filter(r => r.id !== rivalry.id);
+  const winnerName = allProfiles.find(p=>p.id===winnerId)?.display_name || 'You';
+  showToast(winnerId === currentUser.id ? '🏆 Rivalry complete — you won!' : `Rivalry complete — ${winnerName} wins!`);
+  await unlockAchievement('league_champion');
+}
+
+function renderRivalryTab() {
+  const el = document.getElementById('rivalry-content'); if (!el) return;
+  const active  = getMyActiveRivalry();
+  const pendOut = getMyPendingOut();
+  let html = '';
+
+  if (active) {
+    const isChallenger = active.challenger_id === currentUser.id;
+    const opponentId   = isChallenger ? active.challenged_id : active.challenger_id;
+    const opponent     = allProfiles.find(p => p.id === opponentId);
+    const myProgress   = computeProgress(active, currentUser.id);
+    const oppProgress  = isChallenger ? (active.challenged_progress||0) : (active.challenger_progress||0);
+    const target       = active.target_value;
+    const typeLabel    = active.challenge_type === 'words' ? 'flow words' : active.challenge_type === 'sessions' ? 'sessions' : 'hours';
+    const myPct   = Math.min(100, Math.round((myProgress  / target) * 100));
+    const oppPct  = Math.min(100, Math.round((oppProgress / target) * 100));
+    const myName  = myProfile?.display_name || 'You';
+    const oppName = opponent?.display_name || 'Opponent';
+    const ahead   = myProgress > oppProgress;
+    html += `<div class="rivalry-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span class="rivalry-status-pill status-active-pill">Active rivalry</span>
+        <span style="font-size:9px;color:var(--muted)">First to ${target.toLocaleString()} ${typeLabel}</span>
+      </div>
+      <div class="rivalry-vs">
+        <div class="rivalry-player">
+          <div class="rivalry-player-name">${myName} <span style="font-size:9px;color:var(--muted)">(you)</span></div>
+          <div class="rivalry-player-score" style="color:var(--sepia-dark)">${myProgress.toLocaleString()}</div>
+        </div>
+        <div class="rivalry-target"><div style="font-family:'Playfair Display',serif;font-size:18px;font-style:italic">vs</div><div style="font-size:9px;margin-top:4px;color:${ahead?'var(--flow)':'var(--accent)'}">${ahead ? '▲ you lead' : '▼ behind'}</div></div>
+        <div class="rivalry-player">
+          <div class="rivalry-player-name">${oppName}</div>
+          <div class="rivalry-player-score" style="color:#2c5f8a">${oppProgress.toLocaleString()}</div>
+        </div>
+      </div>
+      <div class="rivalry-bars">
+        <div class="rivalry-bar-row">
+          <span style="min-width:70px;text-align:right;color:var(--sepia-dark)">${myName}</span>
+          <div class="rivalry-bar-bg"><div class="rivalry-bar-fill" style="width:${myPct}%;background:var(--sepia-dark)"></div></div>
+          <span style="min-width:36px">${myPct}%</span>
+        </div>
+        <div class="rivalry-bar-row">
+          <span style="min-width:70px;text-align:right;color:#2c5f8a">${oppName}</span>
+          <div class="rivalry-bar-bg"><div class="rivalry-bar-fill" style="width:${oppPct}%;background:#2c5f8a"></div></div>
+          <span style="min-width:36px">${oppPct}%</span>
+        </div>
+      </div>
+      <div style="margin-top:12px;text-align:center">
+        <button onclick="concedeRivalry('${active.id}')" style="padding:6px 14px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;color:var(--muted)">Concede rivalry</button>
+      </div>
+    </div>`;
+  } else if (pendOut) {
+    const opponent = allProfiles.find(p => p.id === pendOut.challenged_id);
+    const typeLabel = pendOut.challenge_type === 'words' ? 'flow words' : pendOut.challenge_type === 'sessions' ? 'sessions' : 'hours';
+    html += `<div class="rivalry-card">
+      <span class="rivalry-status-pill status-pending-pill" style="margin-bottom:10px;display:inline-block">Awaiting response</span>
+      <div style="font-family:'Playfair Display',serif;font-size:15px;margin-bottom:4px">Challenge sent to ${opponent?.display_name || 'opponent'}</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:12px">First to ${pendOut.target_value.toLocaleString()} ${typeLabel}</div>
+      <button onclick="cancelChallenge('${pendOut.id}')" style="padding:6px 14px;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;color:var(--muted)">Cancel challenge</button>
+    </div>`;
+  } else {
+    html += `<div class="rivalry-card" style="text-align:center;padding:28px">
+      <div style="font-size:32px;margin-bottom:10px">⚔️</div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;margin-bottom:6px">No active rivalry</div>
+      <div style="font-size:11px;color:var(--muted)">Find a writer on the leaderboard or H2H view and challenge them.</div>
+    </div>`;
+  }
+
+  // Seasonal rivalry standings
+  html += `<div style="margin-top:16px"><div class="section-title">Season rivalry standings</div><div id="rivalry-season-standings"><div style="font-size:11px;color:var(--muted)">Loading…</div></div></div>`;
+  el.innerHTML = html;
+  loadRivalrySeasonStandings();
+}
+
+async function loadRivalrySeasonStandings() {
+  const season = getCurrentSeason(); if (!season) return;
+  const { data } = await db.from('rivalries').select('winner_id').eq('status','completed').eq('season_key', season.key).not('winner_id','is',null);
+  const winMap = {};
+  for (const r of (data||[])) winMap[r.winner_id] = (winMap[r.winner_id]||0) + 1;
+  const rows = allProfiles.map(p => ({...p, wins: winMap[p.id]||0, isMe: p.id===currentUser.id})).filter(p=>p.wins>0).sort((a,b)=>b.wins-a.wins);
+  const el = document.getElementById('rivalry-season-standings'); if (!el) return;
+  if (!rows.length) { el.innerHTML = '<div style="font-size:11px;color:var(--muted)">No rivalry wins this season yet.</div>'; return; }
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = `<div style="border:1px solid var(--border);border-radius:4px;overflow:hidden">${rows.map((w,i)=>`
+    <div class="lb-row${w.isMe?' you':''}">
+      <div class="lb-rank-num">${medals[i]||i+1}</div>
+      <div class="lb-name-cell">${w.display_name}${w.isMe?' <span style="font-size:9px;color:var(--muted)">(you)</span>':''}</div>
+      <div class="lb-val">${w.wins} win${w.wins!==1?'s':''} · ${season.icon} ${season.name} ${season.year}</div>
+    </div>`).join('')}</div>`;
+}
+
+// ── Challenge modal ────────────────────────────────────────────────────────
+function openChallengeModal(otherId, otherName) {
+  challengeTargetId = otherId; challengeTargetName = otherName; challengeType = 'words';
+  document.getElementById('challenge-vs-name').textContent = otherName;
+  document.getElementById('challenge-target').value = '';
+  document.getElementById('challenge-error').textContent = '';
+  setChallengeType('words');
+  document.getElementById('challenge-overlay').classList.add('show');
+}
+function closeChallengeModal() { document.getElementById('challenge-overlay').classList.remove('show'); }
+function setChallengeType(type) {
+  challengeType = type;
+  ['words','sessions','hours'].forEach(t => document.getElementById(`ctype-${t}`).classList.toggle('active', t===type));
+  const hints = { words:'First to write N flow words', sessions:'First to log N writing sessions', hours:'First to accumulate N timer hours' };
+  const placeholder = { words:'e.g. 10000', sessions:'e.g. 20', hours:'e.g. 10' };
+  document.getElementById('challenge-target-hint').textContent = hints[type];
+  document.getElementById('challenge-target').placeholder = placeholder[type];
+}
+async function sendChallenge() {
+  const target = parseInt(document.getElementById('challenge-target').value);
+  const errEl = document.getElementById('challenge-error');
+  if (!target || target < 1) { errEl.textContent = 'Please enter a valid target.'; return; }
+  if (!challengeTargetId) { errEl.textContent = 'No opponent selected.'; return; }
+  const season = getCurrentSeason();
+  const { data: rivalry, error } = await db.from('rivalries').insert({
+    challenger_id: currentUser.id, challenged_id: challengeTargetId,
+    challenge_type: challengeType, target_value: target,
+    season_key: season?.key || null,
+  }).select().single();
+  if (error) { errEl.textContent = 'Could not send challenge. You may already have a pending challenge.'; return; }
+  await db.from('notifications').insert({ user_id: challengeTargetId, type:'rivalry_invite', from_user_id: currentUser.id, rivalry_id: rivalry.id });
+  myRivalries.push(rivalry);
+  closeChallengeModal();
+  showToast(`⚔️ Challenge sent to ${challengeTargetName}!`);
+  renderRivalryTab();
+}
+async function cancelChallenge(rivalryId) {
+  if (!confirm('Cancel this challenge?')) return;
+  await db.from('rivalries').update({ status:'cancelled' }).eq('id', rivalryId);
+  myRivalries = myRivalries.filter(r => r.id !== rivalryId);
+  renderRivalryTab(); showToast('Challenge cancelled.');
+}
+async function concedeRivalry(rivalryId) {
+  if (!confirm('Concede this rivalry? Your opponent will be declared the winner.')) return;
+  const rivalry = myRivalries.find(r => r.id === rivalryId); if (!rivalry) return;
+  const winnerId = rivalry.challenger_id === currentUser.id ? rivalry.challenged_id : rivalry.challenger_id;
+  await completeRivalry(rivalry, winnerId);
+  renderRivalryTab();
+}
+
+// ── Inbox ──────────────────────────────────────────────────────────────────
+function updateNotifBadge() {
+  const badge = document.getElementById('notif-badge');
+  if (!badge) return;
+  if (unreadCount > 0) { badge.textContent = unreadCount > 9 ? '9+' : unreadCount; badge.style.display = 'flex'; }
+  else badge.style.display = 'none';
+}
+function openInbox() {
+  renderInbox();
+  document.getElementById('inbox-overlay').classList.add('show');
+  // Mark all as read
+  const unreadIds = myNotifications.filter(n=>!n.read).map(n=>n.id);
+  if (unreadIds.length) {
+    db.from('notifications').update({read:true}).in('id', unreadIds);
+    myNotifications.forEach(n => n.read = true);
+    unreadCount = 0;
+    updateNotifBadge();
+  }
+}
+function closeInbox() { document.getElementById('inbox-overlay').classList.remove('show'); }
+function inboxOverlayClick(e) { if (e.target === document.getElementById('inbox-overlay')) closeInbox(); }
+function renderInbox() {
+  const el = document.getElementById('inbox-content');
+  const pendingIn = getMyPendingIn();
+  let html = '';
+
+  if (pendingIn.length) {
+    html += '<div class="inbox-section">Pending challenges</div>';
+    html += pendingIn.map(r => {
+      const challenger = allProfiles.find(p => p.id === r.challenger_id);
+      const typeLabel = r.challenge_type === 'words' ? 'flow words' : r.challenge_type === 'sessions' ? 'sessions' : 'hours';
+      const sent = new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      return `<div class="inbox-notif unread">
+        <div class="inbox-notif-name">⚔️ ${challenger?.display_name || 'Someone'} challenges you!</div>
+        <div class="inbox-notif-meta">First to ${r.target_value.toLocaleString()} ${typeLabel} · sent ${sent}</div>
+        <div class="inbox-actions">
+          <button class="inbox-accept" onclick="acceptRivalry('${r.id}')">Accept</button>
+          <button class="inbox-decline" onclick="declineRivalry('${r.id}')">Decline</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const otherNotifs = myNotifications.filter(n => n.type !== 'rivalry_invite');
+  if (otherNotifs.length) {
+    html += '<div class="inbox-section">Notifications</div>';
+    const icons = { rivalry_accepted:'✅', rivalry_declined:'❌', rivalry_won:'🏆', rivalry_lost:'💔' };
+    const messages = {
+      rivalry_accepted: (n) => `${allProfiles.find(p=>p.id===n.from_user_id)?.display_name||'Your opponent'} accepted your rivalry challenge!`,
+      rivalry_declined: (n) => `${allProfiles.find(p=>p.id===n.from_user_id)?.display_name||'Your opponent'} declined your challenge.`,
+      rivalry_won:      (n) => `You won your rivalry against ${allProfiles.find(p=>p.id===n.from_user_id)?.display_name||'your opponent'}! 🏆`,
+      rivalry_lost:     (n) => `${allProfiles.find(p=>p.id===n.from_user_id)?.display_name||'Your opponent'} beat you in your rivalry.`,
+    };
+    html += otherNotifs.slice(0,15).map(n => {
+      const date = new Date(n.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      const msg = messages[n.type]?.(n) || n.type;
+      return `<div class="inbox-notif${n.read?'':' unread'}">
+        <div style="font-size:12px;margin-bottom:3px">${icons[n.type]||'📬'} ${msg}</div>
+        <div style="font-size:9px;color:var(--muted)">${date}</div>
+      </div>`;
+    }).join('');
+  }
+
+  if (!html) html = '<div style="font-size:11px;color:var(--muted);padding:8px 0">Your inbox is empty.</div>';
+  el.innerHTML = html;
+}
+async function acceptRivalry(rivalryId) {
+  const { data, error } = await db.from('rivalries').update({ status:'active', started_at:new Date().toISOString() }).eq('id', rivalryId).select().single();
+  if (error) { showToast('Error accepting rivalry.'); return; }
+  const rivalry = myRivalries.find(r => r.id === rivalryId);
+  if (rivalry) await db.from('notifications').insert({ user_id: rivalry.challenger_id, type:'rivalry_accepted', from_user_id: currentUser.id, rivalry_id: rivalryId });
+  const idx = myRivalries.findIndex(r => r.id === rivalryId);
+  if (idx >= 0) myRivalries[idx] = data; else myRivalries.push(data);
+  closeInbox(); renderRivalryTab(); showToast('Rivalry accepted — the challenge begins now! ⚔️');
+}
+async function declineRivalry(rivalryId) {
+  const rivalry = myRivalries.find(r => r.id === rivalryId);
+  await db.from('rivalries').update({ status:'declined' }).eq('id', rivalryId);
+  if (rivalry) await db.from('notifications').insert({ user_id: rivalry.challenger_id, type:'rivalry_declined', from_user_id: currentUser.id, rivalry_id: rivalryId });
+  myRivalries = myRivalries.filter(r => r.id !== rivalryId);
+  renderInbox(); showToast('Rivalry declined.');
+}
 function showPage(p, el) {
   document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
