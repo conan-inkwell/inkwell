@@ -109,6 +109,31 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .edit-icon-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 5px;color:var(--muted);opacity:0.6;transition:opacity 0.15s;line-height:1;}
 .edit-icon-btn:hover{opacity:1;}
 
+/* ── League inner tabs ── */
+.league-inner-tabs{display:flex;gap:1px;margin-bottom:14px;border-bottom:1px solid var(--border);}
+.league-inner-tab{background:none;border:none;padding:7px 14px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.league-inner-tab:hover{color:var(--ink);}
+.league-inner-tab.active{color:var(--sepia-dark);border-bottom-color:var(--sepia-dark);}
+
+/* ── Seasons ── */
+.season-header{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;margin-bottom:3px;}
+.season-countdown{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.season-pill{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:10px;cursor:pointer;background:var(--surface);transition:all 0.15s;text-transform:uppercase;letter-spacing:0.4px;}
+.season-pill.active{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
+
+/* ── Chapters ── */
+.chapter-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.chapter-row:last-child{border-bottom:none;}
+.chapter-num{font-size:10px;color:var(--muted);min-width:28px;flex-shrink:0;}
+.chapter-name{font-family:'Playfair Display',serif;font-size:13px;flex:1;}
+.chapter-stats{font-size:9px;color:var(--muted);text-align:right;flex-shrink:0;}
+.chapter-add-form{display:none;margin-top:10px;padding:12px;background:white;border:1px solid var(--border);border-radius:4px;}
+.chapter-add-form.show{display:block;}
+
+/* ── Journal delete ── */
+.journal-delete-btn{background:none;border:none;cursor:pointer;font-size:11px;padding:2px 5px;color:var(--muted);opacity:0.5;transition:opacity 0.15s;line-height:1;}
+.journal-delete-btn:hover{opacity:1;color:var(--accent);}
+
 /* ── Pacing panel ── */
 .pacing-panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;}
 .pacing-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
@@ -120,7 +145,7 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 .pacing-bar-fill{height:100%;border-radius:5px;transition:width 0.8s;position:absolute;top:0;left:0;}
 .pacing-bar-track{position:relative;height:10px;border-radius:5px;overflow:hidden;background:var(--sepia-light);}
 .pacing-bar-target-wrap{position:relative;height:20px;margin-top:1px;}
-.pacing-bar-target{position:absolute;top:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:13px solid var(--ink);transform:translateX(-50%);opacity:0.75;}
+.pacing-bar-target{position:absolute;top:4px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:13px solid var(--ink);transform:translateX(-50%);opacity:0.75;}
 .pacing-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
 .pacing-stat{text-align:center;padding:8px;background:white;border:1px solid var(--border);border-radius:4px;}
 .pacing-stat-val{font-family:'Playfair Display',serif;font-size:16px;line-height:1;margin-bottom:2px;}
@@ -482,7 +507,9 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
     <div class="section-title">Log a session</div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
       <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Project:</span>
-      <select class="project-select" id="write-project"><option value="">— no project —</option></select>
+      <select class="project-select" id="write-project" onchange="onWriteProjectChange()"><option value="">— no project —</option></select>
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px" id="chapter-label" style="display:none">Chapter:</span>
+      <select class="project-select" id="write-chapter" style="display:none"><option value="">— no chapter —</option></select>
     </div>
     <div class="timer-block">
       <div class="timer-row">
@@ -530,12 +557,20 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
 
   <!-- LEAGUE -->
   <div class="page" id="page-league">
+    <div class="league-inner-tabs">
+      <button class="league-inner-tab active" id="ltab-leaderboard" onclick="showLeagueTab('leaderboard')">Leaderboard</button>
+      <button class="league-inner-tab" id="ltab-seasons" onclick="showLeagueTab('seasons')">Seasons</button>
+    </div>
     <div id="league-main">
-      <div class="section-title">Leaderboard</div>
       <div class="metric-pills" id="time-filter-pills" style="margin-bottom:6px"></div>
       <div class="metric-pills" id="metric-pills"></div>
       <div id="lb-table"></div>
       <div class="lb-hint">Click a writer to see head-to-head stats</div>
+    </div>
+    <div id="league-seasons" style="display:none">
+      <div class="metric-pills" id="season-pills" style="margin-bottom:14px"></div>
+      <div id="season-header-area"></div>
+      <div id="season-lb-table"></div>
     </div>
     <div id="league-h2h" style="display:none">
       <button class="back-btn" onclick="showLeagueMain()">← Back to leaderboard</button>
@@ -658,6 +693,8 @@ html,body{font-family:'DM Mono',monospace;background:var(--parchment);color:var(
     </select>
     <span class="se-label">Word count</span>
     <input class="se-input" id="se-words" type="number">
+    <span class="se-label">Date &amp; time</span>
+    <input class="se-input" id="se-datetime" type="datetime-local">
     <span class="se-label">Project</span>
     <select class="se-input" id="se-project"></select>
     <span class="se-label">Note</span>
@@ -725,6 +762,9 @@ let h2hSortBy = 'words', h2hSortDir = 'desc', h2hStatusFilter = 'all';
 let allTimeFlowWords = 0;
 let achQueue = [], achPopupVisible = false;
 let profileSelectedColor = '#8b6914';
+// Batch 6 state
+let myChapters = [];
+let currentSeasonKey = null, seasonCountdownInterval = null, seasonLbCache = {};
 
 const TIME_FILTERS = [
   {key:'today', label:'Today'}, {key:'week', label:'This week'},
@@ -874,7 +914,7 @@ function switchAuthTab(tab) {
 // ── Data loading ───────────────────────────────────────────────────────────
 async function loadAllData() {
   const year = new Date().getFullYear();
-  const [projRes, sessRes, achRes, statsRes, achAllRes, journalRes, allTimeRes] = await Promise.all([
+  const [projRes, sessRes, achRes, statsRes, achAllRes, journalRes, allTimeRes, chapRes] = await Promise.all([
     db.from('projects').select('*').eq('user_id', currentUser.id).eq('archived', false).order('created_at'),
     db.from('sessions').select('*').eq('user_id', currentUser.id).gte('logged_at', `${year}-01-01`).order('logged_at', { ascending: false }),
     db.from('achievements').select('*').eq('user_id', currentUser.id),
@@ -882,6 +922,7 @@ async function loadAllData() {
     db.from('achievements').select('achievement_key, user_id'),
     db.from('journal_entries').select('*').eq('user_id', currentUser.id).order('entry_date', { ascending: false }),
     db.from('yearly_stats').select('flow_words').eq('user_id', currentUser.id),
+    db.from('chapters').select('*').eq('user_id', currentUser.id).order('chapter_number'),
   ]);
   myProjects = projRes.data || [];
   mySessions = sessRes.data || [];
@@ -890,6 +931,7 @@ async function loadAllData() {
   allAchievementsGlobal = achAllRes.data || [];
   myJournalEntries = journalRes.data || [];
   allTimeFlowWords = (allTimeRes.data || []).reduce((sum, s) => sum + (s.flow_words || 0), 0);
+  myChapters = chapRes.data || [];
 }
 
 // ── Render all ─────────────────────────────────────────────────────────────
@@ -1297,6 +1339,8 @@ function renderProjectDetail(project) {
       </div>
     </div>
 
+    <div class="panel" style="margin-bottom:16px">${renderProjectChapters(project)}</div>
+
     <div class="section-title">Session breakdown &nbsp;<span style="font-size:9px;font-style:normal;color:var(--plan)">■ ${stageCounts.plan} plan</span> <span style="font-size:9px;color:var(--flow)">■ ${stageCounts.flow} flow</span> <span style="font-size:9px;color:var(--edit)">■ ${stageCounts.edit} edit</span></div>
     <div>
       ${projectSessions.length === 0
@@ -1324,6 +1368,107 @@ function renderProjectDetail(project) {
 function renderProjectSelect() {
   const sel = document.getElementById('write-project');
   sel.innerHTML = '<option value="">— no project —</option>' + myProjects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  onWriteProjectChange();
+}
+function onWriteProjectChange() {
+  const projectId = document.getElementById('write-project').value;
+  const chapSel = document.getElementById('write-chapter');
+  const chapLabel = document.getElementById('chapter-label');
+  const projectChapters = myChapters.filter(c => c.project_id === projectId);
+  if (projectId && projectChapters.length) {
+    chapSel.style.display = ''; chapLabel.style.display = '';
+    chapSel.innerHTML = '<option value="">— no chapter —</option>' +
+      projectChapters.map(c => `<option value="${c.id}">Ch.${c.chapter_number} · ${c.title}</option>`).join('');
+  } else {
+    chapSel.style.display = 'none'; chapLabel.style.display = 'none';
+  }
+}
+
+// ── Chapter tracking ───────────────────────────────────────────────────────
+function renderProjectChapters(project) {
+  const chapters = myChapters.filter(c => c.project_id === project.id);
+  const flowSessions = mySessions.filter(s => s.project_id === project.id && s.stage === 'flow' && s.word_count > 0);
+  const noChapterWords = flowSessions.filter(s => !s.chapter_id).reduce((sum,s)=>sum+s.word_count,0);
+  const noChapterSessions = flowSessions.filter(s => !s.chapter_id).length;
+  const color = project.color || 'var(--sepia-dark)';
+
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <div class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">Chapters</div>
+    <button class="new-entry-btn" onclick="toggleAddChapterForm('${project.id}')">+ Add chapter</button>
+  </div>
+  <div style="border-bottom:1px solid var(--border);margin-bottom:8px"></div>
+  <div class="chapter-add-form" id="chapter-add-form">
+    <div style="display:grid;grid-template-columns:60px 1fr 120px;gap:8px;align-items:end">
+      <div>
+        <div class="np-label">No.</div>
+        <input class="np-input" id="chap-num" type="number" min="1" value="${chapters.length + 1}">
+      </div>
+      <div>
+        <div class="np-label">Title</div>
+        <input class="np-input" id="chap-title" type="text" placeholder="e.g. The Beginning">
+      </div>
+      <div>
+        <div class="np-label">Word target</div>
+        <input class="np-input" id="chap-target" type="number" placeholder="optional">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="np-save" onclick="saveChapter('${project.id}')">Add chapter</button>
+      <button class="np-cancel" onclick="toggleAddChapterForm('${project.id}')">Cancel</button>
+    </div>
+  </div>`;
+
+  if (!chapters.length) {
+    html += '<div style="font-size:11px;color:var(--muted);padding:8px 0">No chapters yet. Add one above.</div>';
+  } else {
+    html += chapters.map(c => {
+      const chapWords = flowSessions.filter(s=>s.chapter_id===c.id).reduce((sum,s)=>sum+s.word_count,0);
+      const chapSess  = mySessions.filter(s=>s.chapter_id===c.id).length;
+      const pct = c.target_words ? Math.min(100,Math.round((chapWords/c.target_words)*100)) : null;
+      return `<div class="chapter-row">
+        <div class="chapter-num">Ch.${c.chapter_number}</div>
+        <div class="chapter-name">${c.title}</div>
+        <div style="flex:1;margin:0 12px">
+          ${pct !== null ? `<div class="goal-prog-bg" style="height:5px"><div class="goal-prog-fill" style="width:${pct}%;background:${color}"></div></div>` : ''}
+        </div>
+        <div class="chapter-stats">
+          ${chapWords.toLocaleString()} words${c.target_words ? ` / ${c.target_words.toLocaleString()}` : ''}<br>${chapSess} sessions
+        </div>
+      </div>`;
+    }).join('');
+    if (noChapterWords > 0) {
+      html += `<div class="chapter-row" style="opacity:0.5">
+        <div class="chapter-num">—</div>
+        <div class="chapter-name" style="font-style:italic">Unassigned</div>
+        <div style="flex:1"></div>
+        <div class="chapter-stats">${noChapterWords.toLocaleString()} words · ${noChapterSessions} sessions</div>
+      </div>`;
+    }
+  }
+  return `<div style="margin-bottom:16px">${html}</div>`;
+}
+
+function toggleAddChapterForm(projectId) {
+  const f = document.getElementById('chapter-add-form');
+  f.classList.toggle('show');
+  if (f.classList.contains('show')) document.getElementById('chap-title').focus();
+}
+
+async function saveChapter(projectId) {
+  const num   = parseInt(document.getElementById('chap-num').value) || 1;
+  const title = document.getElementById('chap-title').value.trim();
+  const target = parseInt(document.getElementById('chap-target').value) || null;
+  if (!title) { showToast('Please enter a chapter title.'); return; }
+  const { data, error } = await db.from('chapters').insert({
+    project_id: projectId, user_id: currentUser.id,
+    chapter_number: num, title, target_words: target,
+  }).select().single();
+  if (error) { showToast('Error saving chapter.'); return; }
+  myChapters.push(data);
+  myChapters.sort((a,b) => a.chapter_number - b.chapter_number);
+  const project = myProjects.find(p => p.id === projectId);
+  if (project) { renderProjectDetail(project); onWriteProjectChange(); }
+  showToast(`✓ Chapter "${title}" added`);
 }
 function renderColorSwatches() {
   const c = document.getElementById('color-swatches'); if (!c) return;
@@ -1367,7 +1512,108 @@ function renderTodaySessions() {
 }
 
 // ── League ─────────────────────────────────────────────────────────────────
-function renderLeague() { renderTimeFilterPills(); renderMetricPills(); renderLeaderboard(); }
+function renderLeague() {
+  showLeagueTab('leaderboard');
+  renderTimeFilterPills();
+  renderMetricPills();
+  renderLeaderboard();
+}
+
+function showLeagueTab(tab) {
+  const isLb = tab === 'leaderboard';
+  document.getElementById('league-main').style.display    = isLb ? 'block' : 'none';
+  document.getElementById('league-seasons').style.display = isLb ? 'none'  : 'block';
+  document.getElementById('league-h2h').style.display     = 'none';
+  document.getElementById('ltab-leaderboard').classList.toggle('active', isLb);
+  document.getElementById('ltab-seasons').classList.toggle('active', !isLb);
+  if (!isLb) {
+    if (!currentSeasonKey) currentSeasonKey = getCurrentSeason()?.key;
+    renderSeasonsView();
+  } else {
+    stopSeasonCountdown();
+  }
+}
+
+// ── Seasonal leagues ───────────────────────────────────────────────────────
+function getSeasonsList() {
+  const now = new Date(); const y = now.getFullYear();
+  const todayStr = now.toISOString().slice(0,10);
+  const all = [
+    {key:`winter-${y-1}`, name:'Winter', icon:'❄️', year:y-1, start:`${y-2}-12-01`, end:`${y-1}-02-28`},
+    {key:`spring-${y-1}`, name:'Spring', icon:'🌱', year:y-1, start:`${y-1}-03-01`, end:`${y-1}-05-31`},
+    {key:`summer-${y-1}`, name:'Summer', icon:'☀️', year:y-1, start:`${y-1}-06-01`, end:`${y-1}-08-31`},
+    {key:`autumn-${y-1}`, name:'Autumn', icon:'🍂', year:y-1, start:`${y-1}-09-01`, end:`${y-1}-11-30`},
+    {key:`winter-${y}`,   name:'Winter', icon:'❄️', year:y,   start:`${y-1}-12-01`, end:`${y}-02-28`},
+    {key:`spring-${y}`,   name:'Spring', icon:'🌱', year:y,   start:`${y}-03-01`,   end:`${y}-05-31`},
+    {key:`summer-${y}`,   name:'Summer', icon:'☀️', year:y,   start:`${y}-06-01`,   end:`${y}-08-31`},
+    {key:`autumn-${y}`,   name:'Autumn', icon:'🍂', year:y,   start:`${y}-09-01`,   end:`${y}-11-30`},
+    {key:`winter-${y+1}`, name:'Winter', icon:'❄️', year:y+1, start:`${y}-12-01`,   end:`${y+1}-02-28`},
+  ];
+  return all.filter(s => s.start <= todayStr).sort((a,b) => b.start.localeCompare(a.start));
+}
+function getCurrentSeason() {
+  const todayStr = new Date().toISOString().slice(0,10);
+  return getSeasonsList().find(s => s.start <= todayStr && s.end >= todayStr) || getSeasonsList()[0];
+}
+function fmtSeasonDate(str) {
+  return new Date(str + 'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function renderSeasonsView() {
+  const seasons = getSeasonsList();
+  document.getElementById('season-pills').innerHTML = seasons.map(s =>
+    `<div class="season-pill${s.key===currentSeasonKey?' active':''}" onclick="selectSeason('${s.key}')">${s.icon} ${s.name} ${s.year}</div>`
+  ).join('');
+  const season = seasons.find(s => s.key === currentSeasonKey) || seasons[0];
+  if (!season) return;
+  const now = new Date();
+  const endDate = new Date(season.end + 'T23:59:59');
+  const isActive = now >= new Date(season.start) && now <= endDate;
+  document.getElementById('season-header-area').innerHTML = `
+    <div class="panel" style="margin-bottom:14px;text-align:center">
+      <div class="season-header">${season.icon} ${season.name} ${season.year}</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${fmtSeasonDate(season.start)} – ${fmtSeasonDate(season.end)}</div>
+      <div id="season-countdown-display" class="season-countdown">${isActive ? '…' : 'Season complete'}</div>
+    </div>`;
+  if (isActive) startSeasonCountdown(endDate); else stopSeasonCountdown();
+  loadSeasonLeaderboard(season);
+}
+function startSeasonCountdown(endDate) {
+  stopSeasonCountdown();
+  const tick = () => {
+    const el = document.getElementById('season-countdown-display'); if (!el) { stopSeasonCountdown(); return; }
+    const diff = endDate - new Date();
+    if (diff <= 0) { el.textContent = 'Season has ended'; stopSeasonCountdown(); return; }
+    const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+    el.textContent = `Season ends in: ${d}d ${h}h ${m}m ${s}s`;
+  };
+  tick(); seasonCountdownInterval = setInterval(tick, 1000);
+}
+function stopSeasonCountdown() { if (seasonCountdownInterval) { clearInterval(seasonCountdownInterval); seasonCountdownInterval = null; } }
+function selectSeason(key) { currentSeasonKey = key; stopSeasonCountdown(); renderSeasonsView(); }
+async function loadSeasonLeaderboard(season) {
+  document.getElementById('season-lb-table').innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px">Loading rankings…</div>';
+  if (seasonLbCache[season.key]) { renderSeasonLeaderboard(seasonLbCache[season.key]); return; }
+  const { data } = await db.from('sessions').select('user_id,word_count').eq('stage','flow').gt('word_count',0).gte('logged_at', season.start+'T00:00:00').lte('logged_at', season.end+'T23:59:59');
+  const map = {};
+  for (const s of (data||[])) map[s.user_id] = (map[s.user_id]||0) + s.word_count;
+  const rows = allProfiles.map(p => ({...p, words: map[p.id]||0, isMe: p.id===currentUser.id})).sort((a,b)=>b.words-a.words);
+  seasonLbCache[season.key] = rows;
+  renderSeasonLeaderboard(rows);
+}
+function renderSeasonLeaderboard(rows) {
+  const max = rows[0]?.words || 1;
+  const medals = ['🥇','🥈','🥉'];
+  document.getElementById('season-lb-table').innerHTML = `
+    <div style="border:1px solid var(--border);border-radius:4px;overflow:hidden">
+      ${rows.map((w,i) => `<div class="lb-row${w.isMe?' you':''}">
+        <div class="lb-rank-num">${medals[i]||i+1}</div>
+        <div class="lb-name-cell">${w.display_name}${w.isMe?' <span style="font-size:9px;color:var(--muted)">(you)</span>':''}</div>
+        <div class="lb-bar-wrap"><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${Math.round((w.words/max)*100)}%;background:${w.isMe?'var(--sepia-dark)':'#2c5f8a'}"></div></div>
+        <div class="lb-val">${w.words.toLocaleString()} words</div></div>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:9px;color:var(--muted);font-style:italic;margin-top:6px">Flow words only for this season</div>`;
+}
 
 function renderTimeFilterPills() {
   document.getElementById('time-filter-pills').innerHTML = TIME_FILTERS.map(f =>
@@ -1531,7 +1777,12 @@ function setH2HSort(key) {
   renderH2HProjects();
 }
 function setH2HFilter(status) { h2hStatusFilter = status; renderH2HProjects(); }
-function showLeagueMain() { document.getElementById('league-main').style.display = 'block'; document.getElementById('league-h2h').style.display = 'none'; }
+function showLeagueMain() {
+  document.getElementById('league-h2h').style.display = 'none';
+  document.getElementById('league-main').style.display = 'block';
+  document.getElementById('ltab-leaderboard').classList.add('active');
+  document.getElementById('ltab-seasons').classList.remove('active');
+}
 
 // ── Achievement helpers ────────────────────────────────────────────────────
 function getMetricValue(metric) {
@@ -1682,6 +1933,7 @@ function renderJournal() {
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
           <div style="flex:1">${e.title ? `<div class="journal-entry-title">${e.title}</div>` : ''}</div>
           <button class="edit-icon-btn" onclick="editJournalEntry('${e.id}')" title="Edit entry">✏️</button>
+          <button class="journal-delete-btn" onclick="deleteJournalEntry('${e.id}')" title="Delete entry">🗑</button>
         </div>
         <div class="journal-entry-body">${e.body}</div>
         <div class="journal-entry-meta">
@@ -1751,12 +2003,22 @@ async function saveJournalEntry() {
   }
 }
 
-// ── Session editing ────────────────────────────────────────────────────────
+async function deleteJournalEntry(id) {
+  if (!confirm('Delete this journal entry? This cannot be undone.')) return;
+  const { error } = await db.from('journal_entries').delete().eq('id', id);
+  if (error) { showToast('Error deleting entry.'); return; }
+  myJournalEntries = myJournalEntries.filter(e => e.id !== id);
+  renderJournal(); showToast('✓ Entry deleted');
+}
 function openSessionEdit(sessionId) {
   const s = mySessions.find(x => x.id === sessionId); if (!s) return;
   editingSessionId = sessionId;
   document.getElementById('se-stage').value = s.stage;
   document.getElementById('se-words').value = s.word_count;
+  // datetime-local format: YYYY-MM-DDTHH:MM
+  const dt = new Date(s.logged_at);
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('se-datetime').value = `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
   document.getElementById('se-note').value = s.note || '';
   document.getElementById('se-delete-confirm').style.display = 'none';
   const sel = document.getElementById('se-project');
@@ -1769,7 +2031,10 @@ async function saveSessionEdit() {
   const words = parseInt(document.getElementById('se-words').value) || 0;
   const projectId = document.getElementById('se-project').value || null;
   const note = document.getElementById('se-note').value.trim();
-  const { data, error } = await db.from('sessions').update({ stage, word_count: words, project_id: projectId, note: note||null }).eq('id', editingSessionId).select().single();
+  const dtVal = document.getElementById('se-datetime').value;
+  const updateData = { stage, word_count: words, project_id: projectId, note: note||null };
+  if (dtVal) updateData.logged_at = new Date(dtVal).toISOString();
+  const { data, error } = await db.from('sessions').update(updateData).eq('id', editingSessionId).select().single();
   if (error) { showToast('Error saving session.'); return; }
   const idx = mySessions.findIndex(s => s.id === editingSessionId);
   if (idx >= 0) mySessions[idx] = data;
@@ -1845,10 +2110,12 @@ async function logEntry() {
   const count = sessionWordCount;
   const note = document.getElementById('session-note').value.trim();
   const projectId = document.getElementById('write-project').value || null;
+  const chapterId = document.getElementById('write-chapter').value || null;
   document.getElementById('log-btn').disabled = true;
   document.getElementById('log-btn').textContent = 'Saving…';
   const { data, error } = await db.from('sessions').insert({
     user_id: currentUser.id, project_id: projectId, stage: currentStage, word_count: count, note: note || null,
+    chapter_id: chapterId,
     timer_total_seconds: pendingTimerData?.total || null, timer_run_seconds: pendingTimerData?.run || null, timer_paused_seconds: pendingTimerData?.paused || null,
   }).select().single();
   if (error) { showToast('Error saving session.'); document.getElementById('log-btn').disabled = false; document.getElementById('log-btn').textContent = 'Log session'; return; }
@@ -1879,6 +2146,11 @@ async function checkAchievements(newCount) {
   const ps = myStats.plan_sessions || 0;
   const streak = calcStreak(mySessions);
   const toCheck = [];
+  // Kill Your Darlings: 20,000+ words cut in edit sessions
+  if (!uk.has('kill_darlings')) {
+    const wordsCut = mySessions.filter(s => s.stage==='edit' && s.word_count < 0).reduce((sum,s) => sum + Math.abs(s.word_count), 0);
+    if (wordsCut >= 20000) toCheck.push('kill_darlings');
+  }
   if (!uk.has('first_words')) toCheck.push('first_words');
   // Words
   const wordThresholds = [['words_wood',1000],['chapter_one',10000],['words_silver',25000],['nanowrimo',50000],['novelist',80000],['words_sapphire',100000],['words_ruby',250000],['words_emerald',500000],['words_diamond',1000000]];
